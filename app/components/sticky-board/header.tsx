@@ -1,10 +1,9 @@
-import { Plus, RotateCcw, Trash2, Settings } from "lucide-react";
+import { Plus, RotateCcw, Settings } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
 interface StickyBoardHeaderProps {
   notesCount: number;
   onCreateNote: () => void;
-  onClearAll: () => void;
   onOpenSettings: () => void;
   onOpenNotesList: () => void;
 }
@@ -12,7 +11,6 @@ interface StickyBoardHeaderProps {
 export function StickyBoardHeader({
   notesCount,
   onCreateNote,
-  onClearAll,
   onOpenSettings,
   onOpenNotesList,
 }: StickyBoardHeaderProps) {
@@ -36,17 +34,6 @@ export function StickyBoardHeader({
           <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">Settings</span>
         </Button>
-        {notesCount > 0 && (
-          <Button
-            onClick={onClearAll}
-            variant="outline"
-            size="sm"
-            className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 text-xs sm:text-sm px-2 sm:px-3"
-          >
-            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="hidden sm:inline">Clear All</span>
-          </Button>
-        )}
         <Button
           size="sm"
           onClick={onCreateNote}

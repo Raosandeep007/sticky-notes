@@ -1,16 +1,18 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, Calendar } from "lucide-react";
+import { Search, MapPin, Calendar, Trash2 } from "lucide-react";
 import { Drawer } from "./drawer";
 import { type NoteTypes } from "./note";
 import { cn } from "~/lib/utils";
 import { useDevice } from "./hooks/use-device";
+import { Button } from "~/components/ui/button";
 
 interface NotesListPageProps {
   isOpen: boolean;
   onClose: () => void;
   notes: NoteTypes[];
   onNavigateToNote: (note: NoteTypes) => void;
+  onClearAll: () => void;
 }
 
 export function NotesListPage({
@@ -18,6 +20,7 @@ export function NotesListPage({
   onClose,
   notes,
   onNavigateToNote,
+  onClearAll,
 }: NotesListPageProps) {
   const [searchTerm, setSearchTerm] = React.useState("");
   const { isMobile } = useDevice();
@@ -135,10 +138,32 @@ export function NotesListPage({
 
       {/* Footer */}
       {notes.length > 0 && (
-        <div className="p-4 border-t border-gray-100 bg-gray-50">
+        <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-3">
           <p className="text-xs text-gray-500 text-center">
             Click on any note to navigate to it on the canvas
           </p>
+
+          {/* Clear All Button */}
+          <div className="flex justify-center">
+            <Button
+              onClick={() => {
+                if (
+                  window.confirm(
+                    "Are you sure you want to delete all notes? This action cannot be undone."
+                  )
+                ) {
+                  onClearAll();
+                  onClose();
+                }
+              }}
+              variant="outline"
+              size="sm"
+              className="text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 w-full max-w-xs"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Clear All Notes
+            </Button>
+          </div>
         </div>
       )}
     </Drawer>

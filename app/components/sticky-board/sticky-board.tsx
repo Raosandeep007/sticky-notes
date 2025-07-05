@@ -128,7 +128,6 @@ export function StickyBoardApp() {
           <StickyBoardHeader
             notesCount={noteHook.notes.length}
             onCreateNote={handleCreateNote}
-            onClearAll={handleRemoveAllNotes}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenNotesList={() => setIsNotesListOpen(true)}
           />
@@ -220,6 +219,7 @@ export function StickyBoardApp() {
         onClose={() => setIsNotesListOpen(false)}
         notes={noteHook.notes}
         onNavigateToNote={handleNavigateToNote}
+        onClearAll={handleRemoveAllNotes}
       />
     </>
   );
