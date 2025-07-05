@@ -33,8 +33,14 @@ export function StickyBoardApp() {
     const newNote: NoteTypes = {
       id: crypto.randomUUID(),
       text: "",
-      x: 100 + Math.random() * 300,
-      y: 100 + Math.random() * 300,
+      x: Math.max(
+        10,
+        Math.min(window.innerWidth - 280, 50 + Math.random() * 200)
+      ),
+      y: Math.max(
+        80,
+        Math.min(window.innerHeight - 250, 80 + Math.random() * 200)
+      ),
       color: colorScheme,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString([], {
@@ -54,12 +60,17 @@ export function StickyBoardApp() {
 
   const onDrag = (e: React.MouseEvent) => {
     if (!draggingId) return;
+    const newX = Math.max(
+      0,
+      Math.min(window.innerWidth - 280, e.clientX - offset.x)
+    );
+    const newY = Math.max(
+      60,
+      Math.min(window.innerHeight - 250, e.clientY - offset.y)
+    );
+
     setNotes(
-      notes.map((n) =>
-        n.id === draggingId
-          ? { ...n, x: e.clientX - offset.x, y: e.clientY - offset.y }
-          : n
-      )
+      notes.map((n) => (n.id === draggingId ? { ...n, x: newX, y: newY } : n))
     );
   };
 
@@ -89,12 +100,12 @@ export function StickyBoardApp() {
 
   if (!isReady) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-        <div className="flex flex-wrap gap-4 mt-8">
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 px-4">
+        <div className="flex flex-wrap gap-2 sm:gap-4 mt-8 justify-center">
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="w-32 h-32 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse rounded-lg shadow-md"
+              className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse rounded-lg shadow-md"
             />
           ))}
         </div>
@@ -104,9 +115,29 @@ export function StickyBoardApp() {
 
   return (
     <div
-      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden"
+      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden touch-none"
       onMouseMove={onDrag}
       onMouseUp={stopDrag}
+      onTouchMove={(e) => {
+        if (draggingId && e.touches[0]) {
+          const touch = e.touches[0];
+          const newX = Math.max(
+            0,
+            Math.min(window.innerWidth - 280, touch.clientX - offset.x)
+          );
+          const newY = Math.max(
+            60,
+            Math.min(window.innerHeight - 250, touch.clientY - offset.y)
+          );
+
+          setNotes(
+            notes.map((n) =>
+              n.id === draggingId ? { ...n, x: newX, y: newY } : n
+            )
+          );
+        }
+      }}
+      onTouchEnd={stopDrag}
     >
       <StickyBoardHeader
         notesCount={notes.length}
