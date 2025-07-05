@@ -83,7 +83,7 @@ export function CanvasControls({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: isEditingNote ? 0.3 : 0.7 }}
-        className={`sm:block hidden backdrop-blur-sm border border-slate-200 px-2 py-1 rounded text-[10px] text-center transition-colors ${
+        className={`backdrop-blur-sm border border-slate-200 px-2 py-1 rounded text-[10px] text-center transition-colors ${
           isEditingNote
             ? "bg-white/50 text-slate-400"
             : "bg-white/80 text-slate-500"
