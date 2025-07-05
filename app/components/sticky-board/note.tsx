@@ -19,6 +19,9 @@ export type NoteTypes = {
   color: NoteColor;
   date: string;
   time: string;
+  userId: string;
+  canvasId: string;
+  storageKey: string; // Track which storage key this note belongs to
 };
 
 interface NoteProps {

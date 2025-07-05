@@ -8,6 +8,7 @@ import { colorPalette } from "./constants";
 import { type NoteColor } from "./note";
 import { cn } from "~/lib/utils";
 import { useDevice } from "./hooks/use-device";
+import { UserManager } from "./user-manager";
 
 interface SettingsPageProps {
   isOpen: boolean;
@@ -52,6 +53,9 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
     >
       {/* Settings Content */}
       <div className="p-6 space-y-6">
+        {/* User Management */}
+        <UserManager />
+
         {/* Display Settings */}
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-900">Display</h3>

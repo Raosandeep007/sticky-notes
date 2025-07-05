@@ -13,6 +13,7 @@ interface NotesListPageProps {
   notes: NoteTypes[];
   onNavigateToNote: (note: NoteTypes) => void;
   onClearAll: () => void;
+  canvasName?: string;
 }
 
 export function NotesListPage({

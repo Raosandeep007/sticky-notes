@@ -10,6 +10,7 @@ import { InfiniteGrid } from "./infinite-grid";
 import { MiniMap } from "./mini-map";
 import { SettingsPage } from "./settings-page";
 import { NotesListPage } from "./notes-list-page";
+import { CanvasManagerPage } from "./canvas-manager-page";
 import { colorPalette } from "./constants";
 
 // Custom hooks
@@ -19,16 +20,22 @@ import { useDragManagement } from "./hooks/use-drag-management";
 import { useEditingState } from "./hooks/use-editing-state";
 import { useEventHandlers } from "./hooks/use-event-handlers";
 import { useSettings } from "./hooks/use-settings";
+import { useUser } from "./hooks/use-user";
+import { WelcomeScreen } from "./welcome-screen";
 
 export function StickyBoardApp() {
+  // User management
+  const userHook = useUser();
+
   // Settings and UI state
   const settings = useSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNotesListOpen, setIsNotesListOpen] = useState(false);
+  const [isCanvasManagerOpen, setIsCanvasManagerOpen] = useState(false);
 
-  // Custom hooks for different concerns
+  // Custom hooks for different concerns - always call these to maintain hook order
   const canvasHook = useCanvasTransform();
-  const noteHook = useNoteManagement();
+  const noteHook = useNoteManagement(userHook.getUserId());
   const { isEditingNote } = useEditingState();
 
   const dragHook = useDragManagement({
@@ -57,6 +64,28 @@ export function StickyBoardApp() {
     navigateTo: canvasHook.navigateTo,
     setCanvasTransform: canvasHook.setCanvasTransform,
   });
+
+  // Initialize default user if needed
+  React.useEffect(() => {
+    if (userHook.isReady) {
+      userHook.initializeDefaultUser();
+    }
+  }, [userHook.isReady]);
+
+  // Loading state
+  if (!userHook.isReady) {
+    return <LoadingState />;
+  }
+
+  // Show welcome screen if no user is logged in
+  if (!userHook.currentUser) {
+    return <WelcomeScreen />;
+  }
+
+  // Loading state for notes
+  if (!noteHook.isReady) {
+    return <LoadingState />;
+  }
 
   // Handler functions
   const handleCreateNote = () => {
@@ -107,11 +136,6 @@ export function StickyBoardApp() {
     }, 300);
   };
 
-  // Loading state
-  if (!noteHook.isReady) {
-    return <LoadingState />;
-  }
-
   return (
     <>
       <div
@@ -130,6 +154,8 @@ export function StickyBoardApp() {
             onCreateNote={handleCreateNote}
             onOpenSettings={() => setIsSettingsOpen(true)}
             onOpenNotesList={() => setIsNotesListOpen(true)}
+            onOpenCanvasManager={() => setIsCanvasManagerOpen(true)}
+            activeCanvas={noteHook.canvasManager.activeCanvas}
           />
         </div>
 
@@ -211,6 +237,18 @@ export function StickyBoardApp() {
       <SettingsPage
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      {/* Canvas Manager Page */}
+      <CanvasManagerPage
+        isOpen={isCanvasManagerOpen}
+        onClose={() => setIsCanvasManagerOpen(false)}
+        canvases={noteHook.canvasManager.canvases}
+        activeCanvas={noteHook.canvasManager.activeCanvas}
+        onSwitchCanvas={noteHook.canvasManager.switchToCanvas}
+        onCreateCanvas={noteHook.canvasManager.createCanvas}
+        onDeleteCanvas={noteHook.canvasManager.deleteCanvas}
+        onUpdateCanvasName={noteHook.canvasManager.updateCanvasName}
       />
 
       {/* Notes List Page */}
