@@ -42,7 +42,7 @@ export function Note({
   return (
     <div
       className={cn(
-        "absolute w-72 min-h-56 rounded-xl shadow-2xl group transition-all duration-200 ease-out",
+        "absolute w-72 min-h-56 rounded-xl shadow-2xl group transition-all duration-200 ease-out font-bold",
         "border-2 hover:shadow-3xl",
         {
           "cursor-move": isDragging,
@@ -99,7 +99,7 @@ export function Note({
       {/* Note Content */}
       <div className="p-3 pt-2">
         <Textarea
-          className="w-full min-h-32 bg-transparent border-0 resize-none focus-visible:ring-0 text-slate-700 placeholder:text-slate-400 text-sm leading-relaxed"
+          className="w-full min-h-32 bg-transparent border-0 resize-none focus-visible:ring-0 text-slate-700 placeholder:text-slate-400 text-base leading-relaxed font-bold"
           value={note.text}
           placeholder="Write your thoughts..."
           onChange={(e) => onUpdateText(note.id, e.target.value)}

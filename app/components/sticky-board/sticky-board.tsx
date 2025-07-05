@@ -104,7 +104,7 @@ export function StickyBoardApp() {
 
   return (
     <div
-      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden font-sans"
+      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden"
       onMouseMove={onDrag}
       onMouseUp={stopDrag}
     >
