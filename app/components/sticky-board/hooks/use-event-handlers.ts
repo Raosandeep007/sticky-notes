@@ -18,9 +18,11 @@ interface UseEventHandlersProps {
   startTouchZoom: (distance: number) => void;
   updateTouchZoom: (distance: number) => void;
   setZoom: (scale: number) => void;
-  canvasTransform: { scale: number };
+  canvasTransform: { scale: number; x: number; y: number };
   resetView: () => void;
   canvasRef: React.RefObject<HTMLDivElement | null>;
+  navigateTo: (x: number, y: number) => void;
+  setCanvasTransform: (transform: any) => void;
 }
 
 export function useEventHandlers({
@@ -38,6 +40,7 @@ export function useEventHandlers({
   canvasTransform,
   resetView,
   canvasRef,
+  setCanvasTransform,
 }: UseEventHandlersProps) {
   // Global mouse events for dragging and panning
   useEffect(() => {
@@ -72,8 +75,20 @@ export function useEventHandlers({
   // Touch event handlers
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
-      if (e.touches.length === 1 && e.target === canvasRef.current) {
-        startPan(e.touches[0].clientX, e.touches[0].clientY);
+      if (e.touches.length === 1) {
+        // Check if touch is on an interactive element
+        const target = e.target as HTMLElement;
+        const isInteractiveElement =
+          target.tagName === "BUTTON" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "INPUT" ||
+          target.closest("button") ||
+          target.closest("textarea") ||
+          target.closest("[data-note]");
+
+        if (!isInteractiveElement) {
+          startPan(e.touches[0].clientX, e.touches[0].clientY);
+        }
       } else if (e.touches.length === 2) {
         // Pinch to zoom
         const touch1 = e.touches[0];
@@ -86,7 +101,7 @@ export function useEventHandlers({
         stopPan();
       }
     },
-    [startPan, startTouchZoom, stopPan, canvasRef]
+    [startPan, startTouchZoom, stopPan]
   );
 
   const handleTouchMove = useCallback(
@@ -200,11 +215,25 @@ export function useEventHandlers({
         e.preventDefault();
         resetView();
       }
+      // Arrow keys for panning (Figma-like)
+      else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setCanvasTransform((prev: any) => ({ ...prev, y: prev.y + 50 }));
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setCanvasTransform((prev: any) => ({ ...prev, y: prev.y - 50 }));
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setCanvasTransform((prev: any) => ({ ...prev, x: prev.x + 50 }));
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setCanvasTransform((prev: any) => ({ ...prev, x: prev.x - 50 }));
+      }
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [setZoom, canvasTransform.scale, resetView]);
+  }, [setZoom, canvasTransform.scale, resetView, setCanvasTransform]);
 
   // Prevent double-tap zoom
   useEffect(() => {
@@ -228,11 +257,21 @@ export function useEventHandlers({
   // Handle canvas mouse down
   const handleCanvasMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === canvasRef.current) {
+      // Allow panning on the canvas or its direct children, but not on interactive elements
+      const target = e.target as HTMLElement;
+      const isInteractiveElement =
+        target.tagName === "BUTTON" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "INPUT" ||
+        target.closest("button") ||
+        target.closest("textarea") ||
+        target.closest("[data-note]"); // Use data attribute to mark note areas
+
+      if (!isInteractiveElement) {
         startPan(e.clientX, e.clientY);
       }
     },
-    [startPan, canvasRef]
+    [startPan]
   );
 
   return {

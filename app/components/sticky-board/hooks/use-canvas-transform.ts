@@ -5,6 +5,8 @@ import {
   type TouchZoomState,
 } from "../types";
 import { MINIMUM_SCALE, MAXIMUM_SCALE } from "../constants";
+import { useMomentumScroll } from "./use-momentum-scroll";
+import { useAutoPan } from "./use-auto-pan";
 
 export function useCanvasTransform() {
   const [canvasTransform, setCanvasTransform] = useState<CanvasTransform>({
@@ -22,6 +24,34 @@ export function useCanvasTransform() {
   const touchZoomRef = useRef<TouchZoomState>({
     initialDistance: 0,
     initialScale: 1,
+  });
+
+  // Momentum scrolling for smooth panning
+  const panTrackingRef = useRef({
+    lastX: 0,
+    lastY: 0,
+    lastTime: 0,
+  });
+
+  const momentum = useMomentumScroll({
+    onUpdateTransform: (deltaX: number, deltaY: number) => {
+      setCanvasTransform((prev) => ({
+        ...prev,
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }));
+    },
+  });
+
+  // Auto-panning when dragging near edges
+  const autoPan = useAutoPan({
+    onUpdateTransform: (deltaX: number, deltaY: number) => {
+      setCanvasTransform((prev) => ({
+        ...prev,
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }));
+    },
   });
 
   // Convert screen coordinates to canvas coordinates
@@ -60,35 +90,69 @@ export function useCanvasTransform() {
     setCanvasTransform({ x: 0, y: 0, scale: 1 });
   }, []);
 
-  // Handle mouse wheel zoom
+  // Handle mouse wheel zoom and pan
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       e.preventDefault();
-      const delta = e.deltaY * -0.001;
-      const newScale = Math.max(
-        MINIMUM_SCALE,
-        Math.min(MAXIMUM_SCALE, canvasTransform.scale + delta)
-      );
+      momentum.stopMomentum();
 
-      // Zoom towards mouse position
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-
+      if (e.shiftKey) {
+        // Shift + wheel = horizontal pan (Figma-like)
+        const deltaX = e.deltaY * 0.5;
         setCanvasTransform((prev) => ({
-          x: mouseX - (mouseX - prev.x) * (newScale / prev.scale),
-          y: mouseY - (mouseY - prev.y) * (newScale / prev.scale),
-          scale: newScale,
+          ...prev,
+          x: prev.x - deltaX,
         }));
+      } else if (e.ctrlKey || e.metaKey) {
+        // Ctrl/Cmd + wheel = zoom (for systems that use this pattern)
+        const delta = e.deltaY * -0.001;
+        const newScale = Math.max(
+          MINIMUM_SCALE,
+          Math.min(MAXIMUM_SCALE, canvasTransform.scale + delta)
+        );
+
+        // Zoom towards mouse position
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+
+          setCanvasTransform((prev) => ({
+            x: mouseX - (mouseX - prev.x) * (newScale / prev.scale),
+            y: mouseY - (mouseY - prev.y) * (newScale / prev.scale),
+            scale: newScale,
+          }));
+        }
+      } else {
+        // Regular wheel = zoom (default)
+        const delta = e.deltaY * -0.001;
+        const newScale = Math.max(
+          MINIMUM_SCALE,
+          Math.min(MAXIMUM_SCALE, canvasTransform.scale + delta)
+        );
+
+        // Zoom towards mouse position
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+
+          setCanvasTransform((prev) => ({
+            x: mouseX - (mouseX - prev.x) * (newScale / prev.scale),
+            y: mouseY - (mouseY - prev.y) * (newScale / prev.scale),
+            scale: newScale,
+          }));
+        }
       }
     },
-    [canvasTransform.scale]
+    [canvasTransform.scale, momentum]
   );
 
   // Canvas panning handlers
   const startPan = useCallback(
     (clientX: number, clientY: number) => {
+      momentum.stopMomentum();
+
       setPanState({
         isPanning: true,
         panStart: {
@@ -96,26 +160,61 @@ export function useCanvasTransform() {
           y: clientY - canvasTransform.y,
         },
       });
+
+      // Initialize tracking for momentum
+      panTrackingRef.current = {
+        lastX: clientX,
+        lastY: clientY,
+        lastTime: Date.now(),
+      };
     },
-    [canvasTransform]
+    [canvasTransform, momentum]
   );
 
   const updatePan = useCallback(
     (clientX: number, clientY: number) => {
       if (panState.isPanning) {
+        const newX = clientX - panState.panStart.x;
+        const newY = clientY - panState.panStart.y;
+
         setCanvasTransform((prev) => ({
           ...prev,
-          x: clientX - panState.panStart.x,
-          y: clientY - panState.panStart.y,
+          x: newX,
+          y: newY,
         }));
+
+        // Update tracking for momentum
+        panTrackingRef.current = {
+          lastX: clientX,
+          lastY: clientY,
+          lastTime: Date.now(),
+        };
       }
     },
     [panState]
   );
 
   const stopPan = useCallback(() => {
+    if (panState.isPanning) {
+      // Calculate momentum from last movement
+      const now = Date.now();
+      const deltaTime = now - panTrackingRef.current.lastTime;
+
+      if (deltaTime > 0 && deltaTime < 100) {
+        // Only apply momentum if recent movement
+        const currentPos = canvasTransform;
+        const expectedX = panTrackingRef.current.lastX - panState.panStart.x;
+        const expectedY = panTrackingRef.current.lastY - panState.panStart.y;
+
+        const deltaX = expectedX - currentPos.x;
+        const deltaY = expectedY - currentPos.y;
+
+        momentum.startMomentum(deltaX, deltaY, deltaTime);
+      }
+    }
+
     setPanState((prev) => ({ ...prev, isPanning: false }));
-  }, []);
+  }, [panState, canvasTransform, momentum]);
 
   // Touch zoom handlers
   const startTouchZoom = useCallback(
@@ -137,6 +236,15 @@ export function useCanvasTransform() {
     setCanvasTransform((prev) => ({ ...prev, scale }));
   }, []);
 
+  // Navigate to specific canvas coordinates
+  const navigateTo = useCallback((x: number, y: number) => {
+    setCanvasTransform((prev) => ({
+      ...prev,
+      x,
+      y,
+    }));
+  }, []);
+
   return {
     canvasTransform,
     setCanvasTransform,
@@ -153,5 +261,9 @@ export function useCanvasTransform() {
     stopPan,
     startTouchZoom,
     updateTouchZoom,
+    navigateTo,
+    startAutoPan: autoPan.startAutoPan,
+    updateAutoPan: autoPan.updateAutoPan,
+    stopAutoPan: autoPan.stopAutoPan,
   };
 }

@@ -4,7 +4,7 @@ import { getRandomColor } from "../constants";
 
 export function useNoteManagement() {
   const [notes, setNotes, isReady] = useSharedState<NoteTypes[]>([], {
-    key: "sticky-board",
+    key: "sticky-board-3",
   });
 
   const createNote = (x: number, y: number) => {

@@ -89,7 +89,7 @@ export function CanvasControls({
             : "bg-white/80 text-slate-500"
         }`}
       >
-        +/- to zoom • R to reset
+        +/- zoom • R reset • ← → ↑ ↓ pan • Shift+wheel horizontal pan
       </motion.div>
     </motion.div>
   );
