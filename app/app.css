@@ -8,8 +8,37 @@
   box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
 }
 
+.shadow-4xl {
+  box-shadow: 0 50px 80px -12px rgba(0, 0, 0, 0.35);
+}
+
 .hover\:scale-102:hover {
   transform: scale(1.02);
+}
+
+/* Canvas specific styles */
+.touch-none {
+  touch-action: none;
+}
+
+.touch-auto {
+  touch-action: auto;
+}
+
+/* Disable double-tap zoom */
+.no-double-tap-zoom {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Prevent zoom on double tap for the entire app */
+* {
+  touch-action: manipulation;
 }
 
 @theme {

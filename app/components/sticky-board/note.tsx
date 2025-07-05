@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
 import { GripVertical, Trash2 } from "lucide-react";
@@ -39,25 +40,42 @@ export function Note({
   onDelete,
   onChangeColor,
 }: NoteProps) {
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches[0]) {
+      const touch = e.touches[0];
+      const syntheticEvent = {
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        stopPropagation: () => e.stopPropagation(),
+      } as React.MouseEvent;
+      onMouseDown(syntheticEvent, note);
+    }
+  };
+
   return (
-    <div
-      onMouseDown={(e) => onMouseDown(e, note)}
-      onTouchStart={(e) => {
-        const touch = e.touches[0];
-        if (touch) {
-          const syntheticEvent = {
-            clientX: touch.clientX,
-            clientY: touch.clientY,
-          } as React.MouseEvent;
-          onMouseDown(syntheticEvent, note);
-        }
+    <motion.div
+      initial={{ scale: 0, opacity: 0, rotate: -10 }}
+      animate={{
+        scale: isDragging ? 1.05 : 1,
+        opacity: 1,
+        rotate: isDragging ? 1 : 0,
+        zIndex: isDragging ? 40 : "auto",
       }}
+      exit={{ scale: 0, opacity: 0, rotate: 10 }}
+      whileHover={{ scale: 1.02, rotate: 0.5 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        opacity: { duration: 0.2 },
+      }}
+      onMouseDown={(e) => onMouseDown(e, note)}
+      onTouchStart={handleTouchStart}
       className={cn(
-        "absolute w-64 sm:w-72 min-h-48 sm:min-h-56 rounded-xl shadow-2xl group transition-all duration-200 ease-out font-bold",
-        "border-2 hover:shadow-3xl cursor-move",
-        {
-          "scale-105 rotate-1 z-40": isDragging,
-        }
+        "absolute w-64 sm:w-72 min-h-48 sm:min-h-56 rounded-xl shadow-2xl group transition-shadow duration-200 ease-out font-bold",
+        "border-2 hover:shadow-3xl cursor-move touch-none",
+        isDragging && "shadow-4xl"
       )}
       style={{
         top: note.y,
@@ -105,11 +123,12 @@ export function Note({
       {/* Note Content */}
       <div className="p-2 sm:p-3 pt-1 sm:pt-2">
         <Textarea
-          className="w-full min-h-30 sm:min-h-32 bg-transparent border-0 resize-none focus-visible:ring-0 text-slate-700 placeholder:text-slate-400 text-sm sm:text-base leading-relaxed font-bold"
+          className="w-full min-h-30 sm:min-h-32 bg-transparent border-0 resize-none focus-visible:ring-0 text-slate-700 placeholder:text-slate-400 text-sm sm:text-base leading-relaxed font-bold touch-auto"
           value={note.text}
           placeholder="Write your thoughts..."
           onChange={(e) => onUpdateText(note.id, e.target.value)}
           onClick={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
         />
       </div>
 
@@ -119,6 +138,6 @@ export function Note({
           {note.time} - {note.date}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

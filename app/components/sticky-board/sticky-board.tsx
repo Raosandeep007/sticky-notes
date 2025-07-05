@@ -1,166 +1,132 @@
-import { useSharedState } from "@airstate/react";
-import React, { useState } from "react";
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { StickyBoardHeader } from "./header";
-import { type NoteTypes, Note, type NoteColor } from "./note";
+import { type NoteTypes } from "./note";
+import { Note } from "./note";
 import { EmptyState } from "./empty-state";
+import { CanvasControls } from "./canvas-controls";
+import { LoadingState } from "./loading-state";
+import { colorPalette } from "./constants";
 
-const colorPalette: NoteColor[] = [
-  { name: "yellow", color: "#fef3c7", border: "#f59e0b" },
-  { name: "pink", color: "#fce7f3", border: "#ec4899" },
-  { name: "blue", color: "#dbeafe", border: "#3b82f6" },
-  { name: "green", color: "#d1fae5", border: "#10b981" },
-  { name: "purple", color: "#e9d5ff", border: "#8b5cf6" },
-  { name: "orange", color: "#fed7aa", border: "#f97316" },
-  { name: "indigo", color: "#e0e7ff", border: "#6366f1" },
-  { name: "teal", color: "#ccfbf1", border: "#14b8a6" },
-];
-
-const getRandomColor = (): NoteColor => {
-  const randomIndex = Math.floor(Math.random() * colorPalette.length);
-  return colorPalette[randomIndex];
-};
+// Custom hooks
+import { useCanvasTransform } from "./hooks/use-canvas-transform";
+import { useNoteManagement } from "./hooks/use-note-management";
+import { useDragManagement } from "./hooks/use-drag-management";
+import { useEditingState } from "./hooks/use-editing-state";
+import { useEventHandlers } from "./hooks/use-event-handlers";
 
 export function StickyBoardApp() {
-  const [notes, setNotes, isReady] = useSharedState<NoteTypes[]>([], {
-    key: "sticky-board",
+  // Custom hooks for different concerns
+  const canvasHook = useCanvasTransform();
+  const noteHook = useNoteManagement();
+  const { isEditingNote } = useEditingState();
+
+  const dragHook = useDragManagement({
+    updateNotePosition: noteHook.updateNotePosition,
+    canvasScale: canvasHook.canvasTransform.scale,
   });
 
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const eventHook = useEventHandlers({
+    dragState: dragHook.dragState,
+    panState: canvasHook.panState,
+    isEditingNote,
+    updateDrag: dragHook.updateDrag,
+    stopDrag: dragHook.stopDrag,
+    updatePan: canvasHook.updatePan,
+    stopPan: canvasHook.stopPan,
+    startPan: canvasHook.startPan,
+    startTouchZoom: canvasHook.startTouchZoom,
+    updateTouchZoom: canvasHook.updateTouchZoom,
+    zoomIn: canvasHook.zoomIn,
+    zoomOut: canvasHook.zoomOut,
+    resetView: canvasHook.resetView,
+    canvasRef: canvasHook.canvasRef,
+  });
 
-  const createNote = () => {
-    const colorScheme = getRandomColor();
-    const newNote: NoteTypes = {
-      id: crypto.randomUUID(),
-      text: "",
-      x: Math.max(
-        10,
-        Math.min(window.innerWidth - 280, 50 + Math.random() * 200)
-      ),
-      y: Math.max(
-        80,
-        Math.min(window.innerHeight - 250, 80 + Math.random() * 200)
-      ),
-      color: colorScheme,
-      date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setNotes([...(notes || []), newNote]);
-  };
-
-  const startDrag = (e: React.MouseEvent, note: NoteTypes) => {
-    setDraggingId(note.id);
-    const offsetX = e.clientX - note.x;
-    const offsetY = e.clientY - note.y;
-    setOffset({ x: offsetX, y: offsetY });
-  };
-
-  const onDrag = (e: React.MouseEvent) => {
-    if (!draggingId) return;
-    const newX = Math.max(
-      0,
-      Math.min(window.innerWidth - 280, e.clientX - offset.x)
+  // Handler functions
+  const handleCreateNote = () => {
+    const canvasCenter = canvasHook.screenToCanvas(
+      window.innerWidth / 2,
+      window.innerHeight / 2
     );
-    const newY = Math.max(
-      60,
-      Math.min(window.innerHeight - 250, e.clientY - offset.y)
-    );
-
-    setNotes(
-      notes.map((n) => (n.id === draggingId ? { ...n, x: newX, y: newY } : n))
-    );
+    noteHook.createNote(canvasCenter.x, canvasCenter.y);
   };
 
-  const stopDrag = () => setDraggingId(null);
-
-  const updateText = (id: string, newText: string) => {
-    setNotes(notes.map((n) => (n.id === id ? { ...n, text: newText } : n)));
-  };
-
-  const deleteNote = (id: string) => {
-    setNotes(notes.filter((n) => n.id !== id));
-  };
-
-  const changeNoteColor = (id: string, newColor: NoteColor) => {
-    setNotes(notes.map((n) => (n.id === id ? { ...n, color: newColor } : n)));
-  };
-
-  const removeAllNotes = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to remove all notes? This action cannot be undone."
-      )
-    ) {
-      setNotes([]);
+  const handleRemoveAllNotes = () => {
+    if (noteHook.removeAllNotes()) {
+      canvasHook.resetView();
     }
   };
 
-  if (!isReady) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 px-4">
-        <div className="flex flex-wrap gap-2 sm:gap-4 mt-8 justify-center">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-r from-slate-200 via-slate-300 to-slate-200 bg-[length:200%_100%] animate-pulse rounded-lg shadow-md"
-            />
-          ))}
-        </div>
-      </div>
-    );
+  // Loading state
+  if (!noteHook.isReady) {
+    return <LoadingState />;
   }
 
   return (
-    <div
-      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden touch-none select-none"
-      onMouseMove={onDrag}
-      onMouseUp={stopDrag}
-      onTouchMove={(e) => {
-        if (draggingId && e.touches[0]) {
-          const touch = e.touches[0];
-          const newX = Math.max(
-            0,
-            Math.min(window.innerWidth - 280, touch.clientX - offset.x)
-          );
-          const newY = Math.max(
-            60,
-            Math.min(window.innerHeight - 250, touch.clientY - offset.y)
-          );
-
-          setNotes(
-            notes.map((n) =>
-              n.id === draggingId ? { ...n, x: newX, y: newY } : n
-            )
-          );
-        }
-      }}
-      onTouchEnd={stopDrag}
-    >
+    <div className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden no-double-tap-zoom">
       <StickyBoardHeader
-        notesCount={notes.length}
-        onCreateNote={createNote}
-        onClearAll={removeAllNotes}
+        notesCount={noteHook.notes.length}
+        onCreateNote={handleCreateNote}
+        onClearAll={handleRemoveAllNotes}
       />
 
-      {/* Notes */}
-      {notes.map((note) => (
-        <Note
-          key={note.id}
-          note={note}
-          isDragging={draggingId === note.id}
-          colorPalette={colorPalette}
-          onMouseDown={startDrag}
-          onUpdateText={updateText}
-          onDelete={deleteNote}
-          onChangeColor={changeNoteColor}
-        />
-      ))}
+      {/* Canvas Container */}
+      <div
+        ref={canvasHook.canvasRef}
+        className="absolute inset-0 top-16 touch-none select-none cursor-grab active:cursor-grabbing no-double-tap-zoom"
+        onMouseDown={eventHook.handleCanvasMouseDown}
+        onTouchStart={eventHook.handleTouchStart}
+        onWheel={canvasHook.handleWheel}
+        style={{
+          transform: `translate(${canvasHook.canvasTransform.x}px, ${canvasHook.canvasTransform.y}px) scale(${canvasHook.canvasTransform.scale})`,
+          transformOrigin: "0 0",
+        }}
+      >
+        {/* Notes */}
+        <AnimatePresence>
+          {noteHook.notes.map((note) => (
+            <Note
+              key={note.id}
+              note={note}
+              isDragging={dragHook.dragState.draggingId === note.id}
+              colorPalette={colorPalette}
+              onMouseDown={dragHook.startDrag}
+              onUpdateText={noteHook.updateText}
+              onDelete={noteHook.deleteNote}
+              onChangeColor={noteHook.changeNoteColor}
+            />
+          ))}
+        </AnimatePresence>
 
-      {/* Empty State */}
-      {notes.length === 0 && <EmptyState onCreateNote={createNote} />}
+        {/* Empty State */}
+        {noteHook.notes.length === 0 && (
+          <div
+            style={{
+              position: "absolute",
+              left:
+                -canvasHook.canvasTransform.x /
+                  canvasHook.canvasTransform.scale +
+                window.innerWidth / 2,
+              top:
+                -canvasHook.canvasTransform.y /
+                  canvasHook.canvasTransform.scale +
+                window.innerHeight / 2,
+            }}
+          >
+            <EmptyState onCreateNote={handleCreateNote} />
+          </div>
+        )}
+      </div>
+
+      {/* Canvas Controls */}
+      <CanvasControls
+        canvasScale={canvasHook.canvasTransform.scale}
+        isEditingNote={isEditingNote}
+        onZoomIn={canvasHook.zoomIn}
+        onZoomOut={canvasHook.zoomOut}
+        onResetView={canvasHook.resetView}
+      />
     </div>
   );
 }
