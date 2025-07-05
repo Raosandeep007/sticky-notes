@@ -210,22 +210,52 @@ export function useEventHandlers({
         );
         setZoom(newScale);
       }
-      // Reset view with R
-      else if (e.key === "r" || e.key === "R") {
+      // Reset view with R (only when no modifiers are pressed)
+      else if (
+        (e.key === "r" || e.key === "R") &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey
+      ) {
         e.preventDefault();
         resetView();
       }
-      // Arrow keys for panning (Figma-like)
-      else if (e.key === "ArrowUp") {
+      // Arrow keys for panning (Figma-like) - only when no modifiers are pressed
+      else if (
+        e.key === "ArrowUp" &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey
+      ) {
         e.preventDefault();
         setCanvasTransform((prev: any) => ({ ...prev, y: prev.y + 50 }));
-      } else if (e.key === "ArrowDown") {
+      } else if (
+        e.key === "ArrowDown" &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey
+      ) {
         e.preventDefault();
         setCanvasTransform((prev: any) => ({ ...prev, y: prev.y - 50 }));
-      } else if (e.key === "ArrowLeft") {
+      } else if (
+        e.key === "ArrowLeft" &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey
+      ) {
         e.preventDefault();
         setCanvasTransform((prev: any) => ({ ...prev, x: prev.x + 50 }));
-      } else if (e.key === "ArrowRight") {
+      } else if (
+        e.key === "ArrowRight" &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey
+      ) {
         e.preventDefault();
         setCanvasTransform((prev: any) => ({ ...prev, x: prev.x - 50 }));
       }

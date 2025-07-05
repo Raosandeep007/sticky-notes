@@ -7,8 +7,8 @@ export function useNoteManagement() {
     key: "sticky-board-3",
   });
 
-  const createNote = (x: number, y: number) => {
-    const colorScheme = getRandomColor();
+  const createNote = (x: number, y: number, color?: NoteColor) => {
+    const colorScheme = color || getRandomColor();
     const newNote: NoteTypes = {
       id: crypto.randomUUID(),
       text: "",

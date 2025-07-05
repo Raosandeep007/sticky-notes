@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StickyBoardHeader } from "./header";
 import { type NoteTypes } from "./note";
@@ -8,6 +8,7 @@ import { CanvasControls } from "./canvas-controls";
 import { LoadingState } from "./loading-state";
 import { InfiniteGrid } from "./infinite-grid";
 import { MiniMap } from "./mini-map";
+import { SettingsPage } from "./settings-page";
 import { colorPalette } from "./constants";
 
 // Custom hooks
@@ -16,8 +17,13 @@ import { useNoteManagement } from "./hooks/use-note-management";
 import { useDragManagement } from "./hooks/use-drag-management";
 import { useEditingState } from "./hooks/use-editing-state";
 import { useEventHandlers } from "./hooks/use-event-handlers";
+import { useSettings } from "./hooks/use-settings";
 
 export function StickyBoardApp() {
+  // Settings and UI state
+  const settings = useSettings();
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
   // Custom hooks for different concerns
   const canvasHook = useCanvasTransform();
   const noteHook = useNoteManagement();
@@ -56,7 +62,11 @@ export function StickyBoardApp() {
       window.innerWidth / 2,
       window.innerHeight / 2
     );
-    noteHook.createNote(canvasCenter.x, canvasCenter.y);
+    // Use default color only if the setting is enabled, otherwise use random color
+    const color = settings.useDefaultColor
+      ? settings.defaultNoteColor
+      : undefined;
+    noteHook.createNote(canvasCenter.x, canvasCenter.y, color);
   };
 
   const handleRemoveAllNotes = () => {
@@ -85,11 +95,14 @@ export function StickyBoardApp() {
           notesCount={noteHook.notes.length}
           onCreateNote={handleCreateNote}
           onClearAll={handleRemoveAllNotes}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
       </div>
 
       {/* Infinite Grid Background */}
-      <InfiniteGrid canvasTransform={canvasHook.canvasTransform} />
+      {settings.showGrid && (
+        <InfiniteGrid canvasTransform={canvasHook.canvasTransform} />
+      )}
 
       {/* Canvas Container */}
       <div
@@ -150,13 +163,21 @@ export function StickyBoardApp() {
       </div>
 
       {/* Mini Map */}
-      <div className="pointer-events-auto">
-        <MiniMap
-          canvasTransform={canvasHook.canvasTransform}
-          notes={noteHook.notes}
-          onNavigate={canvasHook.navigateTo}
-        />
-      </div>
+      {settings.showMiniMap && (
+        <div className="pointer-events-auto">
+          <MiniMap
+            canvasTransform={canvasHook.canvasTransform}
+            notes={noteHook.notes}
+            onNavigate={canvasHook.navigateTo}
+          />
+        </div>
+      )}
+
+      {/* Settings Page */}
+      <SettingsPage
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </div>
   );
 }
