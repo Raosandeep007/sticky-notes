@@ -1,5 +1,9 @@
 import { configure } from "@airstate/client";
 
+export const airstate = {
+  appKey: import.meta.env.VITE_AIRSTATE_APP_KEY,
+};
+
 configure({
-  appKey: "pk_airstate_ZO1CG3DBRh3cyY_R2AJI6",
+  appKey: airstate.appKey,
 });

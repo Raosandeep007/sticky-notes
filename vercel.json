@@ -1,0 +1,6 @@
+{
+  "buildCommand": "yarn build",
+  "outputDirectory": "build/client",
+  "framework": "vite",
+  "installCommand": "yarn install"
+}
