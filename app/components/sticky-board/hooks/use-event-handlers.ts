@@ -98,7 +98,8 @@ export function useEventHandlers({
           startPan(e.touches[0].clientX, e.touches[0].clientY);
         }
       } else if (e.touches.length === 2) {
-        // Pinch to zoom
+        // Pinch to zoom - prevent browser's default pinch behavior
+        e.preventDefault();
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
         const distance = Math.sqrt(
@@ -108,7 +109,7 @@ export function useEventHandlers({
         const centerX = (touch1.clientX + touch2.clientX) / 2;
         const centerY = (touch1.clientY + touch2.clientY) / 2;
         startTouchZoom(distance, centerX, centerY);
-        stopPan();
+        stopPan(); // Stop any ongoing pan when starting pinch
       }
     },
     [startPan, startTouchZoom, stopPan]
@@ -116,22 +117,9 @@ export function useEventHandlers({
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent) => {
-      // Only prevent default if we're actually panning or doing pinch zoom
-      if (
-        (panState.isPanning && !dragState.draggingId) ||
-        e.touches.length === 2
-      ) {
+      if (e.touches.length === 2) {
+        // Pinch zoom - always prevent default to avoid browser zoom
         e.preventDefault();
-      }
-
-      if (
-        e.touches.length === 1 &&
-        panState.isPanning &&
-        !dragState.draggingId
-      ) {
-        updatePan(e.touches[0].clientX, e.touches[0].clientY);
-      } else if (e.touches.length === 2) {
-        // Pinch zoom
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
         const distance = Math.sqrt(
@@ -141,6 +129,14 @@ export function useEventHandlers({
         const centerX = (touch1.clientX + touch2.clientX) / 2;
         const centerY = (touch1.clientY + touch2.clientY) / 2;
         updateTouchZoom(distance, centerX, centerY);
+      } else if (
+        e.touches.length === 1 &&
+        panState.isPanning &&
+        !dragState.draggingId
+      ) {
+        // Only prevent default for panning if we're actually panning
+        e.preventDefault();
+        updatePan(e.touches[0].clientX, e.touches[0].clientY);
       }
     },
     [panState.isPanning, dragState.draggingId, updatePan, updateTouchZoom]
@@ -159,10 +155,18 @@ export function useEventHandlers({
   // Global touch events for mobile
   useEffect(() => {
     const handleGlobalTouchMove = (e: TouchEvent) => {
-      // Only prevent default if we're panning or dragging
+      // For pinch zoom (2 fingers), always prevent default to avoid browser zoom
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        handleTouchMove(e as any);
+        return;
+      }
+
+      // For single touch, only prevent default if we're panning or dragging
       if (panState.isPanning || dragState.draggingId) {
         e.preventDefault();
       }
+
       handleTouchDrag(e as any);
       handleTouchMove(e as any);
     };
@@ -172,16 +176,32 @@ export function useEventHandlers({
       stopPan();
     };
 
+    const handleGlobalTouchStart = (e: TouchEvent) => {
+      // For multi-touch gestures (pinch zoom), ensure we handle them
+      if (e.touches.length === 2) {
+        e.preventDefault(); // Prevent browser's pinch zoom
+      }
+    };
+
     if (dragState.draggingId || panState.isPanning) {
+      // Use passive: false for touchmove to allow preventDefault
       document.addEventListener("touchmove", handleGlobalTouchMove, {
         passive: false,
       });
-      document.addEventListener("touchend", handleGlobalTouchEnd);
+      document.addEventListener("touchend", handleGlobalTouchEnd, {
+        passive: true,
+      });
     }
+
+    // Always listen for touch start to handle pinch gestures
+    document.addEventListener("touchstart", handleGlobalTouchStart, {
+      passive: false,
+    });
 
     return () => {
       document.removeEventListener("touchmove", handleGlobalTouchMove);
       document.removeEventListener("touchend", handleGlobalTouchEnd);
+      document.removeEventListener("touchstart", handleGlobalTouchStart);
     };
   }, [
     dragState.draggingId,

@@ -120,7 +120,7 @@ export function StickyBoardApp() {
       onTouchMove={eventHook.handleTouchMove}
       onWheel={canvasHook.handleWheel}
       style={{
-        touchAction: "none", // Prevent default touch actions so we can handle them custom
+        touchAction: "pan-x pan-y pinch-zoom", // Allow pan and pinch zoom, prevent double-tap
       }}
     >
       <div className="pointer-events-auto">

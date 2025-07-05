@@ -29,18 +29,36 @@ export function Drawer({
 }: DrawerProps) {
   // Animation variants for different placements
   const getAnimationVariants = () => {
+    const isFloating = placement === "left" || placement === "right";
+
     switch (placement) {
       case "left":
         return {
-          initial: { x: "-100%" },
-          animate: { x: 0 },
-          exit: { x: "-100%" },
+          initial: {
+            x: "-100%",
+            opacity: isFloating ? 0 : 1,
+            scale: isFloating ? 0.9 : 1,
+          },
+          animate: { x: 0, opacity: 1, scale: 1 },
+          exit: {
+            x: "-100%",
+            opacity: isFloating ? 0 : 1,
+            scale: isFloating ? 0.9 : 1,
+          },
         };
       case "right":
         return {
-          initial: { x: "100%" },
-          animate: { x: 0 },
-          exit: { x: "100%" },
+          initial: {
+            x: "100%",
+            opacity: isFloating ? 0 : 1,
+            scale: isFloating ? 0.9 : 1,
+          },
+          animate: { x: 0, opacity: 1, scale: 1 },
+          exit: {
+            x: "100%",
+            opacity: isFloating ? 0 : 1,
+            scale: isFloating ? 0.9 : 1,
+          },
         };
       case "top":
         return {
@@ -56,9 +74,17 @@ export function Drawer({
         };
       default:
         return {
-          initial: { x: "100%" },
-          animate: { x: 0 },
-          exit: { x: "100%" },
+          initial: {
+            x: "100%",
+            opacity: isFloating ? 0 : 1,
+            scale: isFloating ? 0.9 : 1,
+          },
+          animate: { x: 0, opacity: 1, scale: 1 },
+          exit: {
+            x: "100%",
+            opacity: isFloating ? 0 : 1,
+            scale: isFloating ? 0.9 : 1,
+          },
         };
     }
   };
@@ -67,32 +93,51 @@ export function Drawer({
   const getPositionClasses = () => {
     switch (placement) {
       case "left":
-        return `left-0 top-0 ${maxHeight} w-full ${maxWidth}`;
+        return `left-4 top-4 bottom-4 w-full ${maxWidth}`;
       case "right":
-        return `right-0 top-0 ${maxHeight} w-full ${maxWidth}`;
+        return `right-4 top-4 bottom-4 w-full ${maxWidth}`;
       case "top":
         return `top-0 left-0 w-full h-full max-h-96 ${maxHeight}`;
       case "bottom":
         return `bottom-0 left-0 w-full max-h-4/5 ${maxHeight}`;
       default:
-        return `right-0 top-0 ${maxHeight} w-full ${maxWidth}`;
+        return `right-4 top-4 bottom-4 w-full ${maxWidth}`;
+    }
+  };
+
+  // Get styling classes based on placement
+  const getStylingClasses = () => {
+    const isFloating = placement === "left" || placement === "right";
+
+    if (isFloating) {
+      return "bg-white/40 shadow-xl shadow-black/10 rounded-xl border border-white/20 backdrop-blur-xl";
+    }
+
+    if (placement === "bottom") {
+      return "bg-white/50 shadow-xl shadow-black/10 backdrop-blur-xl rounded-t-xl";
+    }
+
+    if (placement === "top") {
+      return "bg-white/50 shadow-xl shadow-black/10 backdrop-blur-xl rounded-b-xl";
     }
   };
 
   const variants = getAnimationVariants();
   const positionClasses = getPositionClasses();
+  const stylingClasses = getStylingClasses();
+  const isFloating = placement === "left" || placement === "right";
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop - only show for floating drawers or full screen */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className={cn("fixed inset-0 z-50 bg-black/20 backdrop-blur-sm")}
           />
 
           {/* Drawer Panel */}
@@ -102,13 +147,21 @@ export function Drawer({
             exit={variants.exit}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className={cn(
-              "fixed bg-white shadow-2xl z-50 overflow-hidden",
-              positionClasses
+              "fixed z-50 overflow-hidden",
+              positionClasses,
+              stylingClasses
             )}
           >
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+              <div
+                className={cn(
+                  "flex items-center justify-between p-4 border-b bg-white/50",
+                  isFloating
+                    ? "rounded-t-xl border-gray-100/50"
+                    : "from-blue-50 to-indigo-50 border-gray-200"
+                )}
+              >
                 <div className="flex items-center gap-3">
                   {icon && (
                     <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
@@ -135,7 +188,14 @@ export function Drawer({
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto">{children}</div>
+              <div
+                className={cn(
+                  "flex-1 overflow-y-auto",
+                  isFloating && "rounded-b-xl"
+                )}
+              >
+                {children}
+              </div>
             </div>
           </motion.div>
         </>
