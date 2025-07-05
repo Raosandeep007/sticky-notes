@@ -25,7 +25,7 @@ export function CanvasControls({
       className="absolute bottom-4 right-4 flex flex-col gap-2 z-50"
     >
       {/* Zoom Slider with Percentage */}
-      <div className="bg-white/90 backdrop-blur-sm border border-slate-200 rounded-lg shadow-lg p-1.5">
+      <div className="backdrop-blur-sm border border-slate-200 rounded-lg shadow-lg p-1.5">
         <div className="flex items-center gap-2.5">
           <input
             type="range"
@@ -64,8 +64,8 @@ export function CanvasControls({
             whileTap={{ scale: !isEditingNote ? 0.95 : 1 }}
             onClick={() => !isEditingNote && onResetView()}
             className={cn({
-              "bg-white/50 text-slate-400 cursor-not-allowed": isEditingNote,
-              "bg-white/90 hover:bg-white text-slate-700": !isEditingNote,
+              "text-slate-400 cursor-not-allowed": isEditingNote,
+              "hover:bg-white text-slate-700": !isEditingNote,
             })}
             title={
               isEditingNote

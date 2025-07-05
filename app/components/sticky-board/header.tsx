@@ -13,9 +13,9 @@ export function StickyBoardHeader({
   onClearAll,
 }: StickyBoardHeaderProps) {
   return (
-    <div className="absolute m-4 top-2 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-white/20 shadow-sm flex items-center justify-between p-2 sm:p-4 rounded-lg">
-      <div className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-        {notesCount} notes
+    <div className="absolute m-3 top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-white/20 shadow-sm flex items-center justify-between p-2 sm:p-4 rounded-full">
+      <div className="text-sm text-slate-500 bg-slate-300 px-3 py-1 rounded-full">
+        {notesCount}
       </div>
 
       <div className="flex items-center gap-1 sm:gap-2">
