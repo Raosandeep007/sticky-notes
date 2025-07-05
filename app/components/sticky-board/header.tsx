@@ -43,6 +43,7 @@ export function StickyBoardHeader({
             </Button>
           )}
           <Button
+            size="sm"
             onClick={onCreateNote}
             className="shadow-lg text-xs sm:text-sm px-2 sm:px-3"
           >

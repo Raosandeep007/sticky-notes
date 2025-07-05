@@ -41,11 +41,21 @@ export function Note({
 }: NoteProps) {
   return (
     <div
+      onMouseDown={(e) => onMouseDown(e, note)}
+      onTouchStart={(e) => {
+        const touch = e.touches[0];
+        if (touch) {
+          const syntheticEvent = {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+          } as React.MouseEvent;
+          onMouseDown(syntheticEvent, note);
+        }
+      }}
       className={cn(
         "absolute w-64 sm:w-72 min-h-48 sm:min-h-56 rounded-xl shadow-2xl group transition-all duration-200 ease-out font-bold",
-        "border-2 hover:shadow-3xl",
+        "border-2 hover:shadow-3xl cursor-move",
         {
-          "cursor-move": isDragging,
           "scale-105 rotate-1 z-40": isDragging,
         }
       )}
@@ -59,20 +69,7 @@ export function Note({
       {/* Note Header */}
       <div className="flex items-center justify-between p-2 sm:p-3 pb-0">
         <div className="flex items-center gap-1 sm:gap-2">
-          <GripVertical
-            className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 cursor-move"
-            onMouseDown={(e) => onMouseDown(e, note)}
-            onTouchStart={(e) => {
-              const touch = e.touches[0];
-              if (touch) {
-                const syntheticEvent = {
-                  clientX: touch.clientX,
-                  clientY: touch.clientY,
-                } as React.MouseEvent;
-                onMouseDown(syntheticEvent, note);
-              }
-            }}
-          />
+          <GripVertical className="size-4 sm:size-5 text-slate-400 cursor-move" />
           <div className="flex gap-0.5 sm:gap-1">
             {colorPalette.map((colorOption) => (
               <button
@@ -82,7 +79,7 @@ export function Note({
                   onChangeColor(note.id, colorOption);
                 }}
                 className={cn(
-                  "w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border-2 border-white shadow-sm transition-transform hover:scale-125",
+                  "size-3 sm:size-4 rounded-full border-2 border-white shadow-sm transition-transform hover:scale-125",
                   note.color.name === colorOption.name &&
                     "ring-2 ring-slate-400"
                 )}

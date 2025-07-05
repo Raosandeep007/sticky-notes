@@ -115,7 +115,7 @@ export function StickyBoardApp() {
 
   return (
     <div
-      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden touch-none"
+      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden touch-none select-none"
       onMouseMove={onDrag}
       onMouseUp={stopDrag}
       onTouchMove={(e) => {
