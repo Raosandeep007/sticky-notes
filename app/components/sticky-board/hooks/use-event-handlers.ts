@@ -15,8 +15,16 @@ interface UseEventHandlersProps {
   updatePan: (clientX: number, clientY: number) => void;
   stopPan: () => void;
   startPan: (clientX: number, clientY: number) => void;
-  startTouchZoom: (distance: number, centerX?: number, centerY?: number) => void;
-  updateTouchZoom: (distance: number, centerX?: number, centerY?: number) => void;
+  startTouchZoom: (
+    distance: number,
+    centerX?: number,
+    centerY?: number
+  ) => void;
+  updateTouchZoom: (
+    distance: number,
+    centerX?: number,
+    centerY?: number
+  ) => void;
   setZoom: (scale: number) => void;
   canvasTransform: { scale: number; x: number; y: number };
   resetView: () => void;
@@ -91,7 +99,6 @@ export function useEventHandlers({
         }
       } else if (e.touches.length === 2) {
         // Pinch to zoom
-        console.log("Touch zoom start detected");
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
         const distance = Math.sqrt(
@@ -125,7 +132,6 @@ export function useEventHandlers({
         updatePan(e.touches[0].clientX, e.touches[0].clientY);
       } else if (e.touches.length === 2) {
         // Pinch zoom
-        console.log("Touch zoom move detected");
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
         const distance = Math.sqrt(

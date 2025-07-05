@@ -6,6 +6,7 @@ interface StickyBoardHeaderProps {
   onCreateNote: () => void;
   onClearAll: () => void;
   onOpenSettings: () => void;
+  onOpenNotesList: () => void;
 }
 
 export function StickyBoardHeader({
@@ -13,12 +14,17 @@ export function StickyBoardHeader({
   onCreateNote,
   onClearAll,
   onOpenSettings,
+  onOpenNotesList,
 }: StickyBoardHeaderProps) {
   return (
     <div className="absolute m-3 top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-white/20 shadow-sm flex items-center justify-between p-2 sm:p-4 rounded-full">
-      <div className="text-sm text-slate-500 bg-slate-300 px-3 py-1 rounded-full">
+      <button
+        onClick={onOpenNotesList}
+        className="text-sm text-slate-500 bg-slate-300 px-3 py-1 rounded-full hover:bg-slate-400 hover:text-white transition-colors cursor-pointer"
+        title={`View all ${notesCount} note${notesCount !== 1 ? "s" : ""}`}
+      >
         {notesCount}
-      </div>
+      </button>
 
       <div className="flex items-center gap-1 sm:gap-2">
         <Button

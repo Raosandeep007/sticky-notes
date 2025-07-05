@@ -73,6 +73,7 @@ export function Note({
       onMouseDown={(e) => onMouseDown(e, note)}
       onTouchStart={handleTouchStart}
       data-note="true"
+      data-note-id={note.id}
       className={cn(
         "absolute w-64 sm:w-72 min-h-48 sm:min-h-56 rounded-xl shadow-2xl group transition-shadow duration-200 ease-out font-bold",
         "border-2 hover:shadow-3xl cursor-move",

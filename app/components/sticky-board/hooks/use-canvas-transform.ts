@@ -227,36 +227,39 @@ export function useCanvasTransform() {
     [canvasTransform.scale]
   );
 
-  const updateTouchZoom = useCallback((distance: number, centerX?: number, centerY?: number) => {
-    const { initialDistance, initialScale } = touchZoomRef.current;
-    if (initialDistance === 0) return; // Prevent division by zero
-    
-    const scale = Math.max(
-      MINIMUM_SCALE,
-      Math.min(MAXIMUM_SCALE, initialScale * (distance / initialDistance))
-    );
-    
-    // If center point is provided, zoom towards that point
-    if (centerX !== undefined && centerY !== undefined) {
-      const scaleDiff = scale - canvasTransform.scale;
-      const rect = canvasRef.current?.getBoundingClientRect();
-      if (rect) {
-        const centerXRelative = centerX - rect.left;
-        const centerYRelative = centerY - rect.top;
-        
-        setCanvasTransform((prev) => ({
-          ...prev,
-          scale,
-          x: prev.x - (centerXRelative * scaleDiff) / prev.scale,
-          y: prev.y - (centerYRelative * scaleDiff) / prev.scale,
-        }));
+  const updateTouchZoom = useCallback(
+    (distance: number, centerX?: number, centerY?: number) => {
+      const { initialDistance, initialScale } = touchZoomRef.current;
+      if (initialDistance === 0) return; // Prevent division by zero
+
+      const scale = Math.max(
+        MINIMUM_SCALE,
+        Math.min(MAXIMUM_SCALE, initialScale * (distance / initialDistance))
+      );
+
+      // If center point is provided, zoom towards that point
+      if (centerX !== undefined && centerY !== undefined) {
+        const scaleDiff = scale - canvasTransform.scale;
+        const rect = canvasRef.current?.getBoundingClientRect();
+        if (rect) {
+          const centerXRelative = centerX - rect.left;
+          const centerYRelative = centerY - rect.top;
+
+          setCanvasTransform((prev) => ({
+            ...prev,
+            scale,
+            x: prev.x - (centerXRelative * scaleDiff) / prev.scale,
+            y: prev.y - (centerYRelative * scaleDiff) / prev.scale,
+          }));
+        } else {
+          setCanvasTransform((prev) => ({ ...prev, scale }));
+        }
       } else {
         setCanvasTransform((prev) => ({ ...prev, scale }));
       }
-    } else {
-      setCanvasTransform((prev) => ({ ...prev, scale }));
-    }
-  }, [canvasTransform.scale]);
+    },
+    [canvasTransform.scale]
+  );
 
   // Navigate to specific canvas coordinates
   const navigateTo = useCallback((x: number, y: number) => {

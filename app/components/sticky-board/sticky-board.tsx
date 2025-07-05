@@ -9,6 +9,7 @@ import { LoadingState } from "./loading-state";
 import { InfiniteGrid } from "./infinite-grid";
 import { MiniMap } from "./mini-map";
 import { SettingsPage } from "./settings-page";
+import { NotesListPage } from "./notes-list-page";
 import { colorPalette } from "./constants";
 
 // Custom hooks
@@ -23,6 +24,7 @@ export function StickyBoardApp() {
   // Settings and UI state
   const settings = useSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isNotesListOpen, setIsNotesListOpen] = useState(false);
 
   // Custom hooks for different concerns
   const canvasHook = useCanvasTransform();
@@ -75,6 +77,36 @@ export function StickyBoardApp() {
     }
   };
 
+  const handleNavigateToNote = (note: NoteTypes) => {
+    // Calculate the position to center the note on screen
+    const screenCenterX = window.innerWidth / 2;
+    const screenCenterY = window.innerHeight / 2;
+
+    // Account for note size (approximately 288px wide x 224px tall based on CSS)
+    const noteWidth = 288;
+    const noteHeight = 224;
+
+    // Set zoom to 100% (scale = 1) and center the note
+    const targetX = screenCenterX - (note.x + noteWidth / 2);
+    const targetY = screenCenterY - (note.y + noteHeight / 2);
+
+    canvasHook.setCanvasTransform({
+      x: targetX,
+      y: targetY,
+      scale: 1,
+    });
+
+    // Focus on the note's textarea after a short delay to allow animation
+    setTimeout(() => {
+      const noteElement = document.querySelector(
+        `[data-note-id="${note.id}"] textarea`
+      );
+      if (noteElement) {
+        (noteElement as HTMLTextAreaElement).focus();
+      }
+    }, 300);
+  };
+
   // Loading state
   if (!noteHook.isReady) {
     return <LoadingState />;
@@ -97,6 +129,7 @@ export function StickyBoardApp() {
           onCreateNote={handleCreateNote}
           onClearAll={handleRemoveAllNotes}
           onOpenSettings={() => setIsSettingsOpen(true)}
+          onOpenNotesList={() => setIsNotesListOpen(true)}
         />
       </div>
 
@@ -178,6 +211,14 @@ export function StickyBoardApp() {
       <SettingsPage
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
+      />
+
+      {/* Notes List Page */}
+      <NotesListPage
+        isOpen={isNotesListOpen}
+        onClose={() => setIsNotesListOpen(false)}
+        notes={noteHook.notes}
+        onNavigateToNote={handleNavigateToNote}
       />
     </div>
   );

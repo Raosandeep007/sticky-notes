@@ -7,7 +7,6 @@ import { useSettings } from "./hooks/use-settings";
 import { colorPalette } from "./constants";
 import { type NoteColor } from "./note";
 import { cn } from "~/lib/utils";
-import { useDevice } from "./hooks/use-device";
 
 interface SettingsPageProps {
   isOpen: boolean;
@@ -27,7 +26,6 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
     animationsEnabled,
     useDefaultColor,
   } = useSettings();
-  const { isMobile } = useDevice();
 
   const handleColorSelect = (color: NoteColor) => {
     updateSetting("defaultNoteColor", color);
@@ -45,7 +43,7 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
     <Drawer
       isOpen={isOpen}
       onClose={onClose}
-      placement={isMobile ? "bottom" : "right"}
+      placement="right"
       title="Settings"
       subtitle="Customize your workspace"
       icon={<Settings className="w-4 h-4 text-white" />}
