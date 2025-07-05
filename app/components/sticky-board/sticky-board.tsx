@@ -113,100 +113,101 @@ export function StickyBoardApp() {
   }
 
   return (
-    <div
-      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden cursor-grab active:cursor-grabbing"
-      onMouseDown={eventHook.handleCanvasMouseDown}
-      onTouchStart={eventHook.handleTouchStart}
-      onTouchMove={eventHook.handleTouchMove}
-      onWheel={canvasHook.handleWheel}
-      style={{
-        touchAction: "pan-x pan-y pinch-zoom", // Allow pan and pinch zoom, prevent double-tap
-      }}
-    >
-      <div className="pointer-events-auto">
-        <StickyBoardHeader
-          notesCount={noteHook.notes.length}
-          onCreateNote={handleCreateNote}
-          onClearAll={handleRemoveAllNotes}
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onOpenNotesList={() => setIsNotesListOpen(true)}
-        />
-      </div>
-
-      {/* Infinite Grid Background */}
-      {settings.showGrid && (
-        <InfiniteGrid canvasTransform={canvasHook.canvasTransform} />
-      )}
-
-      {/* Canvas Container */}
+    <>
       <div
-        ref={canvasHook.canvasRef}
-        className="absolute inset-0 top-16 select-none pointer-events-none"
+        className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden cursor-grab active:cursor-grabbing"
+        onMouseDown={eventHook.handleCanvasMouseDown}
+        onTouchStart={eventHook.handleTouchStart}
+        onTouchMove={eventHook.handleTouchMove}
+        onWheel={canvasHook.handleWheel}
         style={{
-          transform: `translate(${canvasHook.canvasTransform.x}px, ${canvasHook.canvasTransform.y}px) scale(${canvasHook.canvasTransform.scale})`,
-          transformOrigin: "0 0",
+          touchAction: "pan-x pan-y pinch-zoom", // Allow pan and pinch zoom, prevent double-tap
         }}
       >
-        {/* Notes */}
         <div className="pointer-events-auto">
-          <AnimatePresence>
-            {noteHook.notes.map((note) => (
-              <Note
-                key={note.id}
-                note={note}
-                isDragging={dragHook.dragState.draggingId === note.id}
-                colorPalette={colorPalette}
-                onMouseDown={dragHook.startDrag}
-                onUpdateText={noteHook.updateText}
-                onDelete={noteHook.deleteNote}
-                onChangeColor={noteHook.changeNoteColor}
-              />
-            ))}
-          </AnimatePresence>
+          <StickyBoardHeader
+            notesCount={noteHook.notes.length}
+            onCreateNote={handleCreateNote}
+            onClearAll={handleRemoveAllNotes}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onOpenNotesList={() => setIsNotesListOpen(true)}
+          />
         </div>
 
-        {/* Empty State */}
-        {noteHook.notes.length === 0 && (
-          <div
-            className="pointer-events-auto"
-            style={{
-              position: "absolute",
-              left:
-                -canvasHook.canvasTransform.x /
-                  canvasHook.canvasTransform.scale +
-                window.innerWidth / 2,
-              top:
-                -canvasHook.canvasTransform.y /
-                  canvasHook.canvasTransform.scale +
-                window.innerHeight / 2,
-            }}
-          >
-            <EmptyState onCreateNote={handleCreateNote} />
+        {/* Infinite Grid Background */}
+        {settings.showGrid && (
+          <InfiniteGrid canvasTransform={canvasHook.canvasTransform} />
+        )}
+
+        {/* Canvas Container */}
+        <div
+          ref={canvasHook.canvasRef}
+          className="absolute inset-0 top-16 select-none pointer-events-none"
+          style={{
+            transform: `translate(${canvasHook.canvasTransform.x}px, ${canvasHook.canvasTransform.y}px) scale(${canvasHook.canvasTransform.scale})`,
+            transformOrigin: "0 0",
+          }}
+        >
+          {/* Notes */}
+          <div className="pointer-events-auto">
+            <AnimatePresence>
+              {noteHook.notes.map((note) => (
+                <Note
+                  key={note.id}
+                  note={note}
+                  isDragging={dragHook.dragState.draggingId === note.id}
+                  colorPalette={colorPalette}
+                  onMouseDown={dragHook.startDrag}
+                  onUpdateText={noteHook.updateText}
+                  onDelete={noteHook.deleteNote}
+                  onChangeColor={noteHook.changeNoteColor}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Empty State */}
+          {noteHook.notes.length === 0 && (
+            <div
+              className="pointer-events-auto"
+              style={{
+                position: "absolute",
+                left:
+                  -canvasHook.canvasTransform.x /
+                    canvasHook.canvasTransform.scale +
+                  window.innerWidth / 2,
+                top:
+                  -canvasHook.canvasTransform.y /
+                    canvasHook.canvasTransform.scale +
+                  window.innerHeight / 2,
+              }}
+            >
+              <EmptyState onCreateNote={handleCreateNote} />
+            </div>
+          )}
+        </div>
+
+        {/* Canvas Controls */}
+        <div className="pointer-events-auto">
+          <CanvasControls
+            canvasScale={canvasHook.canvasTransform.scale}
+            isEditingNote={isEditingNote}
+            onSetZoom={canvasHook.setZoom}
+            onResetView={canvasHook.resetView}
+          />
+        </div>
+
+        {/* Mini Map */}
+        {settings.showMiniMap && (
+          <div className="pointer-events-auto">
+            <MiniMap
+              canvasTransform={canvasHook.canvasTransform}
+              notes={noteHook.notes}
+              onNavigate={canvasHook.navigateTo}
+            />
           </div>
         )}
       </div>
-
-      {/* Canvas Controls */}
-      <div className="pointer-events-auto">
-        <CanvasControls
-          canvasScale={canvasHook.canvasTransform.scale}
-          isEditingNote={isEditingNote}
-          onSetZoom={canvasHook.setZoom}
-          onResetView={canvasHook.resetView}
-        />
-      </div>
-
-      {/* Mini Map */}
-      {settings.showMiniMap && (
-        <div className="pointer-events-auto">
-          <MiniMap
-            canvasTransform={canvasHook.canvasTransform}
-            notes={noteHook.notes}
-            onNavigate={canvasHook.navigateTo}
-          />
-        </div>
-      )}
-
       {/* Settings Page */}
       <SettingsPage
         isOpen={isSettingsOpen}
@@ -220,6 +221,6 @@ export function StickyBoardApp() {
         notes={noteHook.notes}
         onNavigateToNote={handleNavigateToNote}
       />
-    </div>
+    </>
   );
 }

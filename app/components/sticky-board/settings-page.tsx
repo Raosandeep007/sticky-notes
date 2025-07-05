@@ -97,7 +97,7 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
           </div>
 
           {/* Animations Toggle */}
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <div>
               <label
                 htmlFor="animations-toggle"
@@ -114,10 +114,10 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
               checked={animationsEnabled}
               onCheckedChange={() => toggleSetting("animationsEnabled")}
             />
-          </div>
+          </div> */}
 
           {/* Auto Save Toggle */}
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <div>
               <label
                 htmlFor="autosave-toggle"
@@ -134,7 +134,7 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
               checked={autoSave}
               onCheckedChange={() => toggleSetting("autoSave")}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Note Settings */}
