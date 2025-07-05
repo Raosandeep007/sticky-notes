@@ -37,8 +37,8 @@ export function StickyBoardApp() {
     startPan: canvasHook.startPan,
     startTouchZoom: canvasHook.startTouchZoom,
     updateTouchZoom: canvasHook.updateTouchZoom,
-    zoomIn: canvasHook.zoomIn,
-    zoomOut: canvasHook.zoomOut,
+    setZoom: canvasHook.setZoom,
+    canvasTransform: canvasHook.canvasTransform,
     resetView: canvasHook.resetView,
     canvasRef: canvasHook.canvasRef,
   });
@@ -123,8 +123,7 @@ export function StickyBoardApp() {
       <CanvasControls
         canvasScale={canvasHook.canvasTransform.scale}
         isEditingNote={isEditingNote}
-        onZoomIn={canvasHook.zoomIn}
-        onZoomOut={canvasHook.zoomOut}
+        onSetZoom={canvasHook.setZoom}
         onResetView={canvasHook.resetView}
       />
     </div>

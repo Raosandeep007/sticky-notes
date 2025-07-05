@@ -49,6 +49,13 @@ export function useCanvasTransform() {
     }));
   }, []);
 
+  const setZoom = useCallback((scale: number) => {
+    setCanvasTransform((prev) => ({
+      ...prev,
+      scale: Math.max(MINIMUM_SCALE, Math.min(MAXIMUM_SCALE, scale)),
+    }));
+  }, []);
+
   const resetView = useCallback(() => {
     setCanvasTransform({ x: 0, y: 0, scale: 1 });
   }, []);
@@ -138,6 +145,7 @@ export function useCanvasTransform() {
     screenToCanvas,
     zoomIn,
     zoomOut,
+    setZoom,
     resetView,
     handleWheel,
     startPan,

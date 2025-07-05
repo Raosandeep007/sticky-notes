@@ -17,8 +17,8 @@ interface UseEventHandlersProps {
   startPan: (clientX: number, clientY: number) => void;
   startTouchZoom: (distance: number) => void;
   updateTouchZoom: (distance: number) => void;
-  zoomIn: () => void;
-  zoomOut: () => void;
+  setZoom: (scale: number) => void;
+  canvasTransform: { scale: number };
   resetView: () => void;
   canvasRef: React.RefObject<HTMLDivElement | null>;
 }
@@ -34,8 +34,8 @@ export function useEventHandlers({
   startPan,
   startTouchZoom,
   updateTouchZoom,
-  zoomIn,
-  zoomOut,
+  setZoom,
+  canvasTransform,
   resetView,
   canvasRef,
 }: UseEventHandlersProps) {
@@ -180,12 +180,20 @@ export function useEventHandlers({
       // Zoom in with + or =
       if ((e.key === "+" || e.key === "=") && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        zoomIn();
+        const newScale = Math.min(
+          MAXIMUM_SCALE,
+          canvasTransform.scale + ZOOM_STEP
+        );
+        setZoom(newScale);
       }
       // Zoom out with -
       else if (e.key === "-" && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        zoomOut();
+        const newScale = Math.max(
+          MINIMUM_SCALE,
+          canvasTransform.scale - ZOOM_STEP
+        );
+        setZoom(newScale);
       }
       // Reset view with R
       else if (e.key === "r" || e.key === "R") {
@@ -196,7 +204,7 @@ export function useEventHandlers({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [zoomIn, zoomOut, resetView]);
+  }, [setZoom, canvasTransform.scale, resetView]);
 
   // Prevent double-tap zoom
   useEffect(() => {
