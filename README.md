@@ -1,14 +1,14 @@
-# Airstate Sticky Board
+# Sticky Notes
 
-A beautiful, real-time collaborative sticky board application built with React Router, Airstate, and shadcn/ui.
+A beautiful, real-time collaborative sticky notes application built with React Router, Airstate, and shadcn/ui.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/airstate-sticky-board)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/sticky-notes)
 
 ## Features
 
 - 🚀 **Real-time Collaboration** - Multiple users can create and edit notes simultaneously
 - 🎨 **Beautiful UI** - Modern design with shadcn/ui components and Lucide icons
-- �️ **Drag & Drop** - Intuitive note positioning with smooth animations
+- 🖱️ **Drag & Drop** - Intuitive note positioning with smooth animations
 - 🎨 **Color Palettes** - 8 beautiful color schemes for organizing notes
 - 📱 **Responsive Design** - Works perfectly on desktop and mobile
 - ⚡️ **Server-side Rendering** - Fast initial page loads
@@ -27,23 +27,26 @@ A beautiful, real-time collaborative sticky board application built with React R
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
-git clone https://github.com/your-username/airstate-sticky-board.git
-cd airstate-sticky-board
+git clone https://github.com/your-username/sticky-notes.git
+cd sticky-notes
 ```
 
 2. Install dependencies:
+
 ```bash
 yarn install
 ```
 
 3. Start the development server:
+
 ```bash
 yarn dev
 ```
@@ -71,11 +74,13 @@ yarn preview
 The easiest way to deploy your app is to use [Vercel](https://vercel.com/):
 
 1. **Automatic Deployment:**
+
    - Push your code to GitHub
    - Connect your repository to Vercel
    - Vercel will automatically deploy your app
 
 2. **Manual Deployment:**
+
    ```bash
    yarn global add vercel
    vercel
@@ -93,8 +98,9 @@ No environment variables are required for basic functionality. The Airstate conf
 ### Custom Domain
 
 To use a custom domain with Vercel:
+
 1. Go to your project settings in Vercel dashboard
-2. Navigate to "Domains" 
+2. Navigate to "Domains"
 3. Add your custom domain
 
 ## Configuration
@@ -112,9 +118,9 @@ The app is configured with the following key files:
 app/
 ├── components/
 │   ├── ui/                 # shadcn/ui components
-│   └── sticky-board/       # Sticky board components
-│       ├── StickyBoardApp.tsx
-│       ├── StickyBoardHeader.tsx
+│   └── sticky-notes/       # Sticky notes components
+│       ├── StickyNotesApp.tsx
+│       ├── StickyNotesHeader.tsx
 │       ├── StickyNote.tsx
 │       └── EmptyState.tsx
 ├── routes/
@@ -130,11 +136,13 @@ config/
 ## Features Overview
 
 ### Real-time Collaboration
+
 - Multiple users can simultaneously create, edit, and move sticky notes
 - Changes are instantly synchronized across all connected clients
 - No signup required - just share the URL
 
 ### Note Management
+
 - **Create Notes:** Click "Add Note" or the empty state button
 - **Edit Text:** Click on any note to start typing
 - **Change Colors:** Use the color palette in each note header
@@ -143,6 +151,7 @@ config/
 - **Clear All:** Remove all notes with the "Clear All" button
 
 ### Responsive Design
+
 - Optimized for desktop and mobile devices
 - Touch-friendly interface on mobile
 - Smooth animations and transitions
@@ -163,11 +172,16 @@ This project is licensed under the MIT License.
 
 If you have any questions or need help, please open an issue on GitHub.
 
+## Docker Deployment
+
+Build and run with Docker:
+
 ```bash
-docker build -t my-app .
+# Build the image
+docker build -t sticky-notes .
 
 # Run the container
-docker run -p 3000:3000 my-app
+docker run -p 3000:3000 sticky-notes
 ```
 
 The containerized application can be deployed to any platform that supports Docker, including:

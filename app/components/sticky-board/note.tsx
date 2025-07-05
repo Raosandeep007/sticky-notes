@@ -47,7 +47,6 @@ export function Note({
         {
           "cursor-move": isDragging,
           "scale-105 rotate-1 z-40": isDragging,
-          //   "hover:scale-102": !isDragging,
         }
       )}
       style={{
