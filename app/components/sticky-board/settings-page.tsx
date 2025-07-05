@@ -55,7 +55,7 @@ export function SettingsPage({ isOpen, onClose }: SettingsPageProps) {
             initial={{ opacity: 0, x: 400 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 400 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-50 flex flex-col"
           >
             {/* Header */}

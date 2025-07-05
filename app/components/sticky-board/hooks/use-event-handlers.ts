@@ -15,8 +15,8 @@ interface UseEventHandlersProps {
   updatePan: (clientX: number, clientY: number) => void;
   stopPan: () => void;
   startPan: (clientX: number, clientY: number) => void;
-  startTouchZoom: (distance: number) => void;
-  updateTouchZoom: (distance: number) => void;
+  startTouchZoom: (distance: number, centerX?: number, centerY?: number) => void;
+  updateTouchZoom: (distance: number, centerX?: number, centerY?: number) => void;
   setZoom: (scale: number) => void;
   canvasTransform: { scale: number; x: number; y: number };
   resetView: () => void;
@@ -91,13 +91,16 @@ export function useEventHandlers({
         }
       } else if (e.touches.length === 2) {
         // Pinch to zoom
+        console.log("Touch zoom start detected");
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
         const distance = Math.sqrt(
           Math.pow(touch2.clientX - touch1.clientX, 2) +
             Math.pow(touch2.clientY - touch1.clientY, 2)
         );
-        startTouchZoom(distance);
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+        startTouchZoom(distance, centerX, centerY);
         stopPan();
       }
     },
@@ -122,13 +125,16 @@ export function useEventHandlers({
         updatePan(e.touches[0].clientX, e.touches[0].clientY);
       } else if (e.touches.length === 2) {
         // Pinch zoom
+        console.log("Touch zoom move detected");
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
         const distance = Math.sqrt(
           Math.pow(touch2.clientX - touch1.clientX, 2) +
             Math.pow(touch2.clientY - touch1.clientY, 2)
         );
-        updateTouchZoom(distance);
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+        updateTouchZoom(distance, centerX, centerY);
       }
     },
     [panState.isPanning, dragState.draggingId, updatePan, updateTouchZoom]
@@ -307,5 +313,6 @@ export function useEventHandlers({
   return {
     handleCanvasMouseDown,
     handleTouchStart,
+    handleTouchMove,
   };
 }

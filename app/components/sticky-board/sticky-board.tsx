@@ -82,12 +82,13 @@ export function StickyBoardApp() {
 
   return (
     <div
-      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden no-double-tap-zoom cursor-grab active:cursor-grabbing"
+      className="w-screen h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden cursor-grab active:cursor-grabbing"
       onMouseDown={eventHook.handleCanvasMouseDown}
       onTouchStart={eventHook.handleTouchStart}
+      onTouchMove={eventHook.handleTouchMove}
       onWheel={canvasHook.handleWheel}
       style={{
-        touchAction: "none", // Prevent default touch actions for the entire page
+        touchAction: "none", // Prevent default touch actions so we can handle them custom
       }}
     >
       <div className="pointer-events-auto">
