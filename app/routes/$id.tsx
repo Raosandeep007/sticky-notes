@@ -1,6 +1,7 @@
 import { StickyBoardApp } from "~/components/sticky-board/sticky-board";
 import { useParams } from "react-router";
 import { LoadingState } from "~/components/sticky-board/loading-state";
+import { Analytics } from "@vercel/analytics/react";
 
 export function meta() {
   return [
@@ -18,6 +19,7 @@ export default function DynamicStickyBoard() {
 
   return (
     <>
+      <Analytics />
       <StickyBoardApp boardId={params.id} />
     </>
   );
