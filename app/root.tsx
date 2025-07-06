@@ -5,9 +5,6 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLocation,
-  useNavigate,
-  useParams,
 } from "react-router";
 
 import { useEffect } from "react";
@@ -15,7 +12,7 @@ import "../config/airstate";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Toaster } from "~/components/ui/sonner";
-import { useCryptoId } from "./hooks/use-crypto-id";
+import { useRouteRedirect } from "./hooks/use-route-redirect";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -58,18 +55,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const params = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useCryptoId();
-
-  useEffect(() => {
-    if (location.pathname === "/") {
-      navigate(`/${id}`, { replace: true });
-    } else if (params.id) {
-      console.log("App component initialized with existing ID:", params.id);
-    }
-  }, [location.pathname, params.id, navigate]);
+  useRouteRedirect();
 
   return (
     <>

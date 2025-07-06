@@ -1,4 +1,4 @@
-import { Plus, Settings, Share2 } from "lucide-react";
+import { Plus, Settings, Share2, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 
@@ -57,6 +57,16 @@ export function StickyBoardHeader({
         >
           <Share2 className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">Share</span>
+        </Button>
+        <Button
+          onClick={() => window.open("/admin", "_blank")}
+          variant="outline"
+          size="sm"
+          className="text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-xs sm:text-sm px-2 sm:px-3"
+          title="Admin Dashboard"
+        >
+          <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="hidden sm:inline">Admin</span>
         </Button>
         <Button
           onClick={onOpenSettings}
