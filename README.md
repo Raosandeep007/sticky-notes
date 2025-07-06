@@ -2,7 +2,7 @@
 
 A modern, feature-rich sticky notes application with infinite canvas, multi-user support, and beautiful animations. Built with React Router v7, Airstate, and shadcn/ui.
 
-## 🎮 Features Overview
+## Features Overview
 
 ### Infinite Canvas
 
