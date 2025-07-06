@@ -1,26 +1,25 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { StickyBoardHeader } from "./header";
-import { type NoteTypes } from "./note";
-import { Note } from "./note";
-import { EmptyState } from "./empty-state";
+import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { CanvasControls } from "./canvas-controls";
-import { LoadingState } from "./loading-state";
-import { InfiniteGrid } from "./infinite-grid";
-import { MiniMap } from "./mini-map";
-import { SettingsPage } from "./settings-page";
-import { NotesListPage } from "./notes-list-page";
 import { colorPalette } from "./constants";
+import { EmptyState } from "./empty-state";
+import { StickyBoardHeader } from "./header";
+import { InfiniteGrid } from "./infinite-grid";
+import { LoadingState } from "./loading-state";
+import { MiniMap } from "./mini-map";
+import { Note, type NoteTypes } from "./note";
+import { NotesListPage } from "./notes-list-page";
+import { SettingsPage } from "./settings-page";
 
 // Custom hooks
-import { useCanvasTransform } from "./hooks/use-canvas-transform";
-import { useNoteManagement } from "./hooks/use-note-management";
-import { useDragManagement } from "./hooks/use-drag-management";
-import { useEditingState } from "./hooks/use-editing-state";
-import { useEventHandlers } from "./hooks/use-event-handlers";
-import { useSettings } from "./hooks/use-settings";
+import { useCanvasTransform } from "~/hooks/use-canvas-transform";
+import { useDragManagement } from "~/hooks/use-drag-management";
+import { useEditingState } from "~/hooks/use-editing-state";
+import { useEventHandlers } from "~/hooks/use-event-handlers";
+import { useSettings } from "~/hooks/use-settings";
+import { useNoteManagement } from "~/hooks/use-note-management";
 
-export function StickyBoardApp() {
+export function StickyBoardApp({ boardId }: { boardId: string }) {
   // Settings and UI state
   const settings = useSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -28,7 +27,7 @@ export function StickyBoardApp() {
 
   // Custom hooks for different concerns
   const canvasHook = useCanvasTransform();
-  const noteHook = useNoteManagement();
+  const noteHook = useNoteManagement({ id: boardId });
   const { isEditingNote } = useEditingState();
 
   const dragHook = useDragManagement({

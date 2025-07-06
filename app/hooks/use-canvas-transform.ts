@@ -3,8 +3,11 @@ import {
   type CanvasTransform,
   type PanState,
   type TouchZoomState,
-} from "../types";
-import { MINIMUM_SCALE, MAXIMUM_SCALE } from "../constants";
+} from "../components/sticky-board/types";
+import {
+  MINIMUM_SCALE,
+  MAXIMUM_SCALE,
+} from "../components/sticky-board/constants";
 import { useMomentumScroll } from "./use-momentum-scroll";
 import { useAutoPan } from "./use-auto-pan";
 

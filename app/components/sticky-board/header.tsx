@@ -1,4 +1,4 @@
-import { Plus, RotateCcw, Settings } from "lucide-react";
+import { Plus, Settings } from "lucide-react";
 import { Button } from "~/components/ui/button";
 
 interface StickyBoardHeaderProps {
@@ -15,7 +15,7 @@ export function StickyBoardHeader({
   onOpenNotesList,
 }: StickyBoardHeaderProps) {
   return (
-    <div className="absolute m-3 top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-white/20 shadow-sm flex items-center justify-between p-2 sm:p-4 rounded-full">
+    <div className="absolute m-3 top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-white/20 shadow-sm flex items-center justify-between p-2 rounded-full">
       <button
         onClick={onOpenNotesList}
         className="text-sm text-slate-500 bg-slate-300 px-3 py-1 rounded-full hover:bg-slate-400 hover:text-white transition-colors cursor-pointer"

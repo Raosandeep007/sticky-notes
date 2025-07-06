@@ -1,7 +1,9 @@
 import { useSharedState } from "@airstate/react";
 import { useCallback } from "react";
-import { type AppSettings, DEFAULT_SETTINGS } from "../types/settings";
-import { type NoteColor } from "../note";
+import {
+  type AppSettings,
+  DEFAULT_SETTINGS,
+} from "~/components/sticky-board/types/settings";
 
 export function useSettings() {
   const [settings, setSettings, isReady] = useSharedState<AppSettings>(

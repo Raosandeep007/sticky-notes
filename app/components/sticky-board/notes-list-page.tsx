@@ -1,11 +1,10 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, Calendar, Trash2 } from "lucide-react";
+import { Calendar, MapPin, Search, Trash2 } from "lucide-react";
+import React from "react";
+import { Button } from "~/components/ui/button";
+import { useDevice } from "~/hooks/use-device";
 import { Drawer } from "./drawer";
 import { type NoteTypes } from "./note";
-import { cn } from "~/lib/utils";
-import { useDevice } from "./hooks/use-device";
-import { Button } from "~/components/ui/button";
 
 interface NotesListPageProps {
   isOpen: boolean;

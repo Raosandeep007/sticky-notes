@@ -1,8 +1,7 @@
-import React from "react";
 import { motion } from "framer-motion";
-import { MINIMUM_SCALE, MAXIMUM_SCALE } from "./constants";
-import { Divide, DivideIcon, RotateCcw, TimerResetIcon } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { MAXIMUM_SCALE, MINIMUM_SCALE } from "./constants";
 
 interface CanvasControlsProps {
   canvasScale: number;

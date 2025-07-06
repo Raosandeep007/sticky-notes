@@ -1,10 +1,10 @@
 import { useSharedState } from "@airstate/react";
-import { type NoteTypes, type NoteColor } from "../note";
-import { getRandomColor } from "../constants";
+import { type NoteColor, type NoteTypes } from "~/components/sticky-board/note";
+import { getRandomColor } from "~/components/sticky-board/constants";
 
-export function useNoteManagement() {
+export function useNoteManagement({ id }: { id: string }) {
   const [notes, setNotes, isReady] = useSharedState<NoteTypes[]>([], {
-    key: "sticky-board-3",
+    key: `sticky-board-${id}`,
   });
 
   const createNote = (x: number, y: number, color?: NoteColor) => {

@@ -4,7 +4,7 @@ import {
   ZOOM_STEP,
   MINIMUM_SCALE,
   MAXIMUM_SCALE,
-} from "../constants";
+} from "~/components/sticky-board/constants";
 
 interface UseEventHandlersProps {
   dragState: { draggingId: string | null };

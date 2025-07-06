@@ -3,11 +3,11 @@ import { Settings, RotateCcw, Palette } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Switch } from "./switch";
 import { Drawer } from "./drawer";
-import { useSettings } from "./hooks/use-settings";
+import { useSettings } from "~/hooks/use-settings";
 import { colorPalette } from "./constants";
 import { type NoteColor } from "./note";
 import { cn } from "~/lib/utils";
-import { useDevice } from "./hooks/use-device";
+import { useDevice } from "~/hooks/use-device";
 
 interface SettingsPageProps {
   isOpen: boolean;

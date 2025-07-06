@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
-import { type DragState } from "../types";
-import { type NoteTypes } from "../note";
+import { type DragState } from "~/components/sticky-board/types";
+import { type NoteTypes } from "~/components/sticky-board/note";
 
 interface UseDragManagementProps {
   updateNotePosition: (id: string, deltaX: number, deltaY: number) => void;
