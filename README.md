@@ -1,77 +1,118 @@
 # Sticky Notes
 
-A beautiful, real-time collaborative sticky notes application built with React Router, Airstate, and shadcn/ui.
+A modern, feature-rich sticky notes application with infinite canvas, multi-user support, and beautiful animations. Built with React Router v7, Airstate, and shadcn/ui.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/sticky-notes)
+## 🎮 Features Overview
 
-## Features
+### Infinite Canvas
 
-- 🚀 **Real-time Collaboration** - Multiple users can create and edit notes simultaneously
-- 🎨 **Beautiful UI** - Modern design with shadcn/ui components and Lucide icons
-- 🖱️ **Drag & Drop** - Intuitive note positioning with smooth animations
-- 🎨 **Color Palettes** - 8 beautiful color schemes for organizing notes
-- 📱 **Responsive Design** - Works perfectly on desktop and mobile
-- ⚡️ **Server-side Rendering** - Fast initial page loads
-- 🔒 **TypeScript** - Full type safety throughout the application
+- **Pan & Zoom:** Mouse wheel, trackpad, or touch gestures
+- **Momentum:** Natural scrolling with physics-based momentum
+- **Grid System:** Dynamic grid that scales with zoom level
+- **Minimap:** Interactive overview for easy navigation
+- **Mobile Support:** Pinch-to-zoom and touch panning
 
-## Tech Stack
+### Note Management
 
-- **React Router 7** - Full-stack React framework with SSR
+- **Create Notes:** Click anywhere on canvas or use "Add Note" button
+- **Edit Text:** Click on any note to start typing
+- **Change Colors:** Use the color palette in note headers
+- **Move Notes:** Drag notes around with smooth animations
+- **Delete Notes:** Click trash icon or use "Clear All"
+- **Random Colors:** Toggle between fixed and random note colors
+- **Search & filter** - Find notes quickly in the notes list
+- **Focus navigation** - Click notes in list to pan/zoom to them
+
+### Navigation & UI
+
+- **Dynamic Routing:** Each canvas has a unique shareable URL (`/:id`)
+- **Settings Panel:** Customize app behavior and preferences
+- **Notes List:** Search, filter, and navigate to specific notes
+- **Share Button:** Copy current canvas URL to clipboard
+- **Responsive:** Works perfectly on all device sizes
+
+### Real-time Features
+
+- **Live Sync:** Changes appear instantly across all connected clients
+- **Collaborative:** Multiple users can work simultaneously
+- **Persistent:** Notes are automatically saved
+
+### � **Developer Experience**
+
+- **TypeScript** - Full type safety throughout
+- **Modular architecture** - Clean, maintainable codebase
+- **Custom hooks** - Reusable logic for canvas, notes, and user management
+- **SPA deployment** - Optimized for Vercel and static hosting
+
+## 🛠 Tech Stack
+
+- **React Router v7** - Modern React framework with SPA mode
 - **Airstate** - Real-time state synchronization
+- **Framer Motion** - Smooth animations and physics
 - **shadcn/ui** - Beautiful and accessible UI components
+- **Sonner** - Elegant toast notifications
 - **Tailwind CSS** - Utility-first CSS framework
 - **Lucide React** - Beautiful icons
 - **TypeScript** - Type safety and better DX
+- **Vite** - Fast development and build tooling
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- yarn
+- npm or yarn
 
 ### Installation
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/sticky-notes.git
+git clone https://github.com/Raosandeep007/sticky-notes.git
 cd sticky-notes
 ```
 
 2. Install dependencies:
 
 ```bash
+npm install
+# or
 yarn install
 ```
 
 3. Start the development server:
 
 ```bash
+npm run dev
+# or
 yarn dev
 ```
 
 Your application will be available at `http://localhost:5173`.
 
-## Building for Production
+## 📦 Building for Production
 
 Create a production build:
 
 ```bash
+npm run build
+# or
 yarn build
 ```
 
 Preview the production build:
 
 ```bash
+npm run preview
+# or
 yarn preview
 ```
 
-## Deployment
+## 🚀 Deployment
 
 ### Deploy to Vercel (Recommended)
 
-The easiest way to deploy your app is to use [Vercel](https://vercel.com/):
+This app is optimized for Vercel deployment in SPA mode:
 
 1. **Automatic Deployment:**
 
@@ -82,81 +123,67 @@ The easiest way to deploy your app is to use [Vercel](https://vercel.com/):
 2. **Manual Deployment:**
 
    ```bash
-   yarn global add vercel
+   npm install -g vercel
    vercel
    ```
 
-3. **Using the Deploy Button:**
-   - Click the "Deploy with Vercel" button above
-   - Connect your GitHub account
-   - Your app will be deployed automatically
-
 ### Environment Variables
 
-No environment variables are required for basic functionality. The Airstate configuration is included in the codebase.
+No environment variables are required for basic functionality. All configuration is included in the codebase.
 
-### Custom Domain
-
-To use a custom domain with Vercel:
-
-1. Go to your project settings in Vercel dashboard
-2. Navigate to "Domains"
-3. Add your custom domain
-
-## Configuration
+## ⚙️ Configuration
 
 The app is configured with the following key files:
 
-- `vercel.json` - Vercel deployment configuration
-- `react-router.config.ts` - React Router configuration with SSR enabled
+- `vercel.json` - Vercel deployment configuration (SPA mode)
+- `react-router.config.ts` - React Router configuration with SPA enabled
 - `vite.config.ts` - Vite build configuration
-- `tailwind.config.js` - Tailwind CSS configuration
+- `components.json` - shadcn/ui configuration
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 app/
 ├── components/
-│   ├── ui/                 # shadcn/ui components
-│   └── sticky-notes/       # Sticky notes components
-│       ├── StickyNotesApp.tsx
-│       ├── StickyNotesHeader.tsx
-│       ├── StickyNote.tsx
-│       └── EmptyState.tsx
+│   ├── ui/                    # shadcn/ui components
+│   │   ├── button.tsx
+│   │   ├── textarea.tsx
+│   │   └── sonner.tsx         # Toast notifications
+│   └── sticky-board/          # Main application components
+│       ├── sticky-board.tsx   # Main app component
+│       ├── header.tsx         # App header with controls
+│       ├── note.tsx          # Individual sticky note
+│       ├── canvas-controls.tsx # Zoom/pan controls
+│       ├── minimap.tsx       # Canvas minimap
+│       ├── settings-page.tsx  # Settings panel
+│       ├── notes-list-page.tsx # Notes list drawer
+│       ├── user-manager.tsx   # User authentication
+│       ├── canvas-switcher.tsx # Canvas management
+│       ├── drawer.tsx         # Reusable drawer component
+│       ├── loading-state.tsx  # Beautiful loading screen
+│       └── hooks/             # Custom hooks
+│           ├── use-note-management.ts
+│           ├── use-canvas-management.ts
+│           ├── use-canvas-transform.ts
+│           ├── use-drag-management.ts
+│           ├── use-event-handlers.ts
+│           ├── use-settings.ts
+│           ├── use-user.ts
+│           └── use-device.ts
 ├── routes/
-│   └── home.tsx           # Main application route
+│   ├── home.tsx              # Home route (redirects to random ID)
+│   └── $id.tsx              # Dynamic route for each canvas
+├── hooks/
+│   └── use-crypto-id.ts      # ID generation utilities
 ├── lib/
-│   └── utils.ts           # Utility functions
-└── root.tsx               # App root with Airstate config
+│   └── utils.ts              # Utility functions
+└── root.tsx                  # App root with providers
 
 config/
-└── airstate.ts            # Airstate configuration
+└── airstate.ts               # Airstate configuration
 ```
 
-## Features Overview
-
-### Real-time Collaboration
-
-- Multiple users can simultaneously create, edit, and move sticky notes
-- Changes are instantly synchronized across all connected clients
-- No signup required - just share the URL
-
-### Note Management
-
-- **Create Notes:** Click "Add Note" or the empty state button
-- **Edit Text:** Click on any note to start typing
-- **Change Colors:** Use the color palette in each note header
-- **Move Notes:** Drag notes around the canvas
-- **Delete Notes:** Click the trash icon on individual notes
-- **Clear All:** Remove all notes with the "Clear All" button
-
-### Responsive Design
-
-- Optimized for desktop and mobile devices
-- Touch-friendly interface on mobile
-- Smooth animations and transitions
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -164,53 +191,10 @@ config/
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License.
-
-## Support
+## 💬 Support
 
 If you have any questions or need help, please open an issue on GitHub.
 
-## Docker Deployment
-
-Build and run with Docker:
-
-```bash
-# Build the image
-docker build -t sticky-notes .
-
-# Run the container
-docker run -p 3000:3000 sticky-notes
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `yarn build`
-
-```
-├── package.json
-├── yarn.lock
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router v7.
