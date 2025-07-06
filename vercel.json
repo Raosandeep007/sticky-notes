@@ -1,6 +1,10 @@
 {
-  "buildCommand": "yarn build",
+  "buildCommand": "npm run build",
   "outputDirectory": "build/client",
-  "framework": "vite",
-  "installCommand": "yarn install"
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }

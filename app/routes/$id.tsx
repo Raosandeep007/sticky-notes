@@ -1,25 +1,17 @@
 import { StickyBoardApp } from "~/components/sticky-board/sticky-board";
-import type { Route } from "./+types/$id";
 import { useParams } from "react-router";
 import { LoadingState } from "~/components/sticky-board/loading-state";
 
-export function meta({ params }: Route.MetaArgs) {
+export function meta() {
   return [
-    { title: `${params.id} - Sticky Notes` },
-    { name: "description", content: `Sticky Notes App - ${params.id}` },
+    { title: "Sticky Notes" },
+    { name: "description", content: "Sticky Notes App" },
   ];
 }
 
-export function loader({ params }: Route.LoaderArgs): { id: string } {
-  return {
-    id: params.id,
-  };
-}
-
-export default function DynamicStickyBoard({
-  loaderData,
-}: Route.ComponentProps) {
+export default function DynamicStickyBoard() {
   const params = useParams();
+
   if (!params.id) {
     return <LoadingState />;
   }

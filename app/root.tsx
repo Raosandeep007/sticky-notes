@@ -63,13 +63,13 @@ export default function App() {
   const location = useLocation();
   const { id } = useCryptoId();
 
-  // useEffect(() => {
-  //   if (location.pathname === "/") {
-  //     navigate(`/${id}`, { replace: true });
-  //   } else if (params.id) {
-  //     console.log("App component initialized with existing ID:", params.id);
-  //   }
-  // }, [location.pathname, params.id, navigate]);
+  useEffect(() => {
+    if (location.pathname === "/") {
+      navigate(`/${id}`, { replace: true });
+    } else if (params.id) {
+      console.log("App component initialized with existing ID:", params.id);
+    }
+  }, [location.pathname, params.id, navigate]);
 
   return (
     <>
