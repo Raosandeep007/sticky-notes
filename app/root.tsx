@@ -13,6 +13,11 @@ import "./app.css";
 import { Toaster } from "./components/ui/sonner";
 import { useRouteRedirect } from "./hooks/use-route-redirect";
 import { Analytics } from "@vercel/analytics/react";
+import { PostHogProvider } from "posthog-js/react";
+
+const options = {
+  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+};
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -45,10 +50,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <Toaster />
-        <ScrollRestoration />
-        <Scripts />
+        <PostHogProvider
+          apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+          options={options}
+        >
+          {children}
+          <Toaster />
+          <ScrollRestoration />
+          <Scripts />
+        </PostHogProvider>
       </body>
     </html>
   );

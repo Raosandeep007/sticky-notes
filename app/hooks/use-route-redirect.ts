@@ -1,7 +1,7 @@
+import posthog from "posthog-js";
 import { useEffect, useRef } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import { useCryptoId } from "./use-crypto-id";
-import { track } from "@vercel/analytics";
 
 // Call this function when a user clicks a button or performs an action you want to track
 
@@ -21,12 +21,17 @@ export function useRouteRedirect() {
 
     if (currentPath === "/") {
       navigate(`/${id}`, { replace: true });
-      track("route_redirect to new ID", { from: currentPath, to: `/${id}` });
+      posthog.capture("route_redirect to new ID", {
+        from: currentPath,
+        to: `/${id}`,
+        id,
+      });
     } else if (params.id) {
       console.log("App component initialized with existing ID:", params.id);
-      track("route_redirect to existing ID", {
+      posthog.capture("route_redirect to existing ID", {
         from: currentPath,
         to: `/${params.id}`,
+        id: params.id,
       });
     }
   }, [location.pathname, params.id, navigate, id]);
