@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import "../config/airstate";
 import type { Route } from "./+types/root";
 import "./app.css";
+import { Toaster } from "~/components/ui/sonner";
 import { useCryptoId } from "./hooks/use-crypto-id";
 
 export const links: Route.LinksFunction = () => [
@@ -48,6 +49,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>
