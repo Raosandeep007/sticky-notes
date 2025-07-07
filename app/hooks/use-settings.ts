@@ -4,12 +4,15 @@ import {
   type AppSettings,
   DEFAULT_SETTINGS,
 } from "~/components/sticky-board/types/settings";
+import { useRouteRedirect } from "./use-route-redirect";
 
 export function useSettings() {
+  const { currentId } = useRouteRedirect();
+  const key = `settings-${currentId}-${JSON.stringify(DEFAULT_SETTINGS)}`;
   const [settings, setSettings, isReady] = useSharedState<AppSettings>(
     DEFAULT_SETTINGS,
     {
-      key: JSON.stringify(DEFAULT_SETTINGS),
+      key,
     }
   );
 
