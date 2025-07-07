@@ -12,7 +12,6 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { Toaster } from "./components/ui/sonner";
 import { useRouteRedirect } from "./hooks/use-route-redirect";
-import { Analytics } from "@vercel/analytics/react";
 import { PostHogProvider } from "posthog-js/react";
 
 const options = {
@@ -69,7 +68,6 @@ export default function App() {
 
   return (
     <>
-      <Analytics />
       <Outlet />
     </>
   );
