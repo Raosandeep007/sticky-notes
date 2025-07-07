@@ -11,7 +11,7 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  showMiniMap: true,
+  showMiniMap: false,
   defaultNoteColor: { name: "yellow", color: "#fef3c7", border: "#f59e0b" },
   showGrid: true,
   autoSave: true,
